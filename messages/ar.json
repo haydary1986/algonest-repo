@@ -105,5 +105,47 @@
       "institutional_only": "يُسمح فقط بحسابات @uomosul.edu.iq.",
       "error_generic": "تعذّر تسجيل دخولك. حاول مرة أخرى أو راجع المسؤول."
     }
+  },
+  "directory": {
+    "title": "الباحثون",
+    "subtitle": "{count, plural, =0 {لا يوجد باحثون بعد} one {باحث واحد} two {باحثان} few {# باحثين} many {# باحثاً} other {# باحث}}",
+    "search_placeholder": "ابحث بالاسم…",
+    "filters": {
+      "title": "التصفية",
+      "all": "الكل",
+      "workplace_type": "مكان العمل",
+      "college": "الكلية",
+      "department": "القسم",
+      "academic_title": "اللقب العلمي",
+      "sdg": "هدف SDG",
+      "clear": "مسح التصفية"
+    },
+    "sort": {
+      "label": "الترتيب",
+      "name_asc": "الاسم (أ→ي)",
+      "scopus_h_desc": "Scopus h-index",
+      "wos_h_desc": "WoS h-index",
+      "pubs_desc": "المنشورات",
+      "citations_desc": "الاقتباسات",
+      "recent": "الأحدث تحديثاً"
+    },
+    "card": {
+      "metrics": {
+        "publications": "{count, plural, =0 {لا منشورات} one {# منشور} two {منشوران} few {# منشورات} many {# منشوراً} other {# منشور}}",
+        "h_index": "h-index {value}"
+      },
+      "no_title": "باحث",
+      "view_profile": "عرض الملف"
+    },
+    "empty": {
+      "title": "لا يوجد باحثون يطابقون التصفية",
+      "body": "حاول توسيع المعايير أو مسح التصفية بالكامل.",
+      "cta": "مسح التصفية"
+    },
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "page_of": "الصفحة {page}"
+    }
   }
 }

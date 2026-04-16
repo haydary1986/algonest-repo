@@ -13,6 +13,7 @@ import { TabProjects } from '@/components/profile/tab-projects';
 import { TabExperience } from '@/components/profile/tab-experience';
 import { TabThesis } from '@/components/profile/tab-thesis';
 import { TabActivities } from '@/components/profile/tab-activities';
+import { SimilarResearchers } from '@/components/profile/similar-researchers';
 import { Breadcrumbs } from '@/components/seo/breadcrumbs';
 import { PersonSchema } from '@/components/seo/person-schema';
 import { PublicationsSchema } from '@/components/seo/scholarly-article-schema';
@@ -132,6 +133,7 @@ export default async function ResearcherPage({ params }: ResearcherPageProps) {
             activities={<TabActivities />}
           />
         </div>
+        <SimilarResearchers researcherId={payload.profile.id} locale={typedLocale} />
       </section>
     </>
   );

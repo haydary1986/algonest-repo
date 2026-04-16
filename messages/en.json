@@ -45,5 +45,14 @@
     "terms": "Terms of Service",
     "address": "University of Mosul, Mosul, Iraq",
     "copyright": "© {year} University of Mosul. All rights reserved."
+  },
+  "auth": {
+    "sign_in": {
+      "title": "Sign in",
+      "description": "Use your University of Mosul Google account.",
+      "google": "Continue with Google",
+      "institutional_only": "Only @uomosul.edu.iq accounts may sign in.",
+      "error_generic": "We couldn't sign you in. Please try again or contact the admin."
+    }
   }
 }

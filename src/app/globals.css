@@ -50,6 +50,12 @@
 
 :root {
   --font-sans: var(--font-inter), system-ui, sans-serif;
+  --gradient-primary: linear-gradient(
+    135deg,
+    oklch(0.45 0.18 264) 0%,
+    oklch(0.5 0.16 230) 50%,
+    oklch(0.55 0.14 200) 100%
+  );
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);
   --card: oklch(1 0 0);

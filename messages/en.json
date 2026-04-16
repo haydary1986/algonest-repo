@@ -32,10 +32,61 @@
       "cta_secondary": "Learn more"
     },
     "stats": {
+      "title": "Research at a glance",
       "researchers": "Researchers",
       "colleges": "Colleges",
       "departments": "Departments",
-      "publications": "Publications"
+      "publications": "Publications",
+      "empty": "Awaiting first sync."
+    },
+    "featured": {
+      "title": "Featured researchers",
+      "subtitle": "Highest-impact scholars by Scopus h-index.",
+      "view_profile": "View profile",
+      "publications_count": "{count, plural, =0 {no publications} one {# publication} other {# publications}}",
+      "h_index": "h-index {value}",
+      "empty": "No featured researchers yet."
+    },
+    "mission": {
+      "title": "Our mission",
+      "items": {
+        "collaboration": {
+          "title": "Foster collaboration",
+          "body": "Connect researchers across colleges and disciplines for joint discovery."
+        },
+        "excellence": {
+          "title": "Academic excellence",
+          "body": "Showcase the scholarship that earns the University its global standing."
+        },
+        "innovation": {
+          "title": "Research innovation",
+          "body": "Surface emerging fields, open data, and tools that move research forward."
+        }
+      }
+    },
+    "sdg": {
+      "title": "United Nations Sustainable Development Goals",
+      "subtitle": "Tap a goal to discover the researchers contributing to it.",
+      "explore": "Explore goal {number}",
+      "goals": {
+        "1": "No Poverty",
+        "2": "Zero Hunger",
+        "3": "Good Health and Well-being",
+        "4": "Quality Education",
+        "5": "Gender Equality",
+        "6": "Clean Water and Sanitation",
+        "7": "Affordable and Clean Energy",
+        "8": "Decent Work and Economic Growth",
+        "9": "Industry, Innovation and Infrastructure",
+        "10": "Reduced Inequalities",
+        "11": "Sustainable Cities and Communities",
+        "12": "Responsible Consumption and Production",
+        "13": "Climate Action",
+        "14": "Life Below Water",
+        "15": "Life on Land",
+        "16": "Peace, Justice and Strong Institutions",
+        "17": "Partnerships for the Goals"
+      }
     }
   },
   "footer": {

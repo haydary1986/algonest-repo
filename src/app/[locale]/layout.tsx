@@ -6,6 +6,8 @@ import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { Header } from '@/components/layout/header';
+import { Footer } from '@/components/layout/footer';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
 
@@ -68,7 +70,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <Header />
+            <div className="flex flex-1 flex-col">{children}</div>
+            <Footer />
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>

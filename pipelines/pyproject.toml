@@ -1,0 +1,34 @@
+[project]
+name = "ris-pipelines"
+version = "0.1.0"
+description = "Data sync + embedding pipelines for the RIS platform."
+requires-python = ">=3.11"
+dependencies = [
+  "supabase>=2.7.0",
+  "httpx>=0.27",
+  "pybliometrics>=3.6",
+  "pyalex>=0.14",
+  "sentence-transformers>=3.0",
+  "rapidfuzz>=3.9",
+  "prefect>=3.0",
+  "tenacity>=9.0",
+  "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "mypy", "pytest"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true

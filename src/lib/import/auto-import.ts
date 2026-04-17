@@ -1,4 +1,5 @@
 import { createAdminClient } from '@/lib/supabase/admin';
+import { logError } from '@/lib/logger';
 
 const OPENALEX_API = 'https://api.openalex.org';
 const INSTITUTION_ID = 'I2801460691';
@@ -132,6 +133,7 @@ export async function autoImportForUser(
 
     return { imported: true, publications: pubCount };
   } catch (e) {
+    await logError('auto-import.openalex', String(e), { userId, email }).catch(() => {});
     return { imported: false, publications: 0, error: String(e) };
   }
 }

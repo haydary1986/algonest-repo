@@ -290,6 +290,7 @@
       "users": "User management",
       "admins": "Manage admins",
       "auth-logs": "Auth & security log",
+      "error-log": "Error log",
       "visibility": "Researcher visibility",
       "settings": "Homepage settings",
       "audit": "Audit log",

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { createClient } from '@/lib/supabase/server';
+import { logError } from '@/lib/logger';
 import {
   academicSchema,
   awardSchema,
@@ -55,7 +56,10 @@ async function updateResearcher(patch: Record<string, unknown>): Promise<ActionR
   if (!id) return { ok: false, error: 'no_profile' };
 
   const { error } = await supabase.from('researchers').update(patch).eq('id', id);
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    await logError('manage.updateResearcher', error.message, { patch, researcherId: id });
+    return { ok: false, error: error.message };
+  }
 
   revalidatePath('/[locale]/researcher/[username]', 'page');
   revalidatePath('/[locale]/manage-profile', 'page');

@@ -26,6 +26,7 @@ export async function Header() {
   let user: { email: string | null; avatarUrl: string | null } | null = null;
   let isAdmin = false;
   let logoUrl = '';
+  let logoDarkUrl = '';
   let logoText = '';
 
   try {
@@ -47,10 +48,16 @@ export async function Header() {
     const { data: brandingRows } = await supabase
       .from('app_settings')
       .select('key, value')
-      .in('key', ['branding.logo_url', 'branding.logo_text', 'branding.favicon_url']);
+      .in('key', [
+        'branding.logo_url',
+        'branding.logo_dark_url',
+        'branding.logo_text',
+        'branding.favicon_url',
+      ]);
     for (const row of brandingRows ?? []) {
       const val = typeof row.value === 'string' ? row.value.replace(/^"|"$/g, '') : '';
       if (row.key === 'branding.logo_url' && val) logoUrl = val;
+      if (row.key === 'branding.logo_dark_url' && val) logoDarkUrl = val;
       if (row.key === 'branding.logo_text' && val) logoText = val;
     }
   } catch {
@@ -65,11 +72,20 @@ export async function Header() {
           className="flex items-center gap-2 text-base font-semibold tracking-tight whitespace-nowrap"
         >
           {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={logoText || tCommon('app_name')}
-              className="h-8 object-contain"
-            />
+            <>
+              <img
+                src={logoUrl}
+                alt={logoText || tCommon('app_name')}
+                className={`h-8 object-contain ${logoDarkUrl ? 'dark:hidden' : ''}`}
+              />
+              {logoDarkUrl ? (
+                <img
+                  src={logoDarkUrl}
+                  alt={logoText || tCommon('app_name')}
+                  className="hidden h-8 object-contain dark:block"
+                />
+              ) : null}
+            </>
           ) : (
             logoText || tCommon('app_name')
           )}

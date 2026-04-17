@@ -19,13 +19,15 @@ export function BrandingForm({ settings, locale }: Props) {
   const isAr = locale === 'ar';
   const [faviconUrl, setFaviconUrl] = useState(settings['branding.favicon_url'] ?? '');
   const [logoUrl, setLogoUrl] = useState(settings['branding.logo_url'] ?? '');
+  const [logoDarkUrl, setLogoDarkUrl] = useState(settings['branding.logo_dark_url'] ?? '');
   const [logoText, setLogoText] = useState(settings['branding.logo_text'] ?? 'RIS');
   const [isPending, startTransition] = useTransition();
   const [uploading, setUploading] = useState<string | null>(null);
   const faviconRef = useRef<HTMLInputElement>(null);
   const logoRef = useRef<HTMLInputElement>(null);
+  const logoDarkRef = useRef<HTMLInputElement>(null);
 
-  async function uploadImage(file: File, type: 'favicon' | 'logo') {
+  async function uploadImage(file: File, type: 'favicon' | 'logo' | 'logo_dark') {
     setUploading(type);
     try {
       const supabase = createClient();
@@ -52,6 +54,7 @@ export function BrandingForm({ settings, locale }: Props) {
       const url = pub.publicUrl;
 
       if (type === 'favicon') setFaviconUrl(url);
+      else if (type === 'logo_dark') setLogoDarkUrl(url);
       else setLogoUrl(url);
 
       toast.success(isAr ? 'تم الرفع' : 'Uploaded');
@@ -67,6 +70,7 @@ export function BrandingForm({ settings, locale }: Props) {
       const results = await Promise.all([
         updateSetting('branding.favicon_url', faviconUrl),
         updateSetting('branding.logo_url', logoUrl),
+        updateSetting('branding.logo_dark_url', logoDarkUrl),
         updateSetting('branding.logo_text', logoText),
       ]);
       const failed = results.filter((r) => !r.ok);
@@ -212,6 +216,76 @@ export function BrandingForm({ settings, locale }: Props) {
             {isAr
               ? 'PNG أو SVG أو WEBP، يفضّل عرض 200 بكسل وخلفية شفافة.'
               : 'PNG, SVG, or WEBP. Recommended: 200px wide, transparent background.'}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Dark Mode Logo */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ImageIcon className="size-5" />
+            {isAr ? 'شعار الوضع الداكن (Dark Mode Logo)' : 'Dark Mode Logo'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-16 w-32 items-center justify-center rounded-lg border bg-gray-900">
+              {logoDarkUrl ? (
+                <img
+                  src={logoDarkUrl}
+                  alt="logo dark"
+                  className="max-h-12 max-w-28 object-contain"
+                />
+              ) : logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt="logo fallback"
+                  className="max-h-12 max-w-28 object-contain opacity-50"
+                />
+              ) : (
+                <span className="text-xl font-bold text-gray-400">{logoText}</span>
+              )}
+            </div>
+            <div className="flex-1 space-y-2">
+              <Label>{isAr ? 'رابط شعار الوضع الداكن' : 'Dark Mode Logo URL'}</Label>
+              <Input
+                value={logoDarkUrl}
+                onChange={(e) => setLogoDarkUrl(e.target.value)}
+                placeholder="https://..."
+                className="font-mono text-xs"
+              />
+              <input
+                ref={logoDarkRef}
+                type="file"
+                accept="image/png,image/svg+xml,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadImage(f, 'logo_dark');
+                  e.target.value = '';
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => logoDarkRef.current?.click()}
+                disabled={uploading === 'logo_dark'}
+              >
+                {uploading === 'logo_dark' ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Upload className="size-4" />
+                )}
+                {isAr ? 'رفع صورة' : 'Upload image'}
+              </Button>
+            </div>
+          </div>
+          <p className="text-muted-foreground text-xs">
+            {isAr
+              ? 'اختياري — شعار بألوان فاتحة للخلفية الداكنة. إذا لم يُحدد، يُستخدم الشعار الأساسي.'
+              : 'Optional — light-colored logo for dark backgrounds. Falls back to main logo if empty.'}
           </p>
         </CardContent>
       </Card>

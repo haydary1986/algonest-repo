@@ -108,7 +108,13 @@ export function ManageAdminsClient({
             }}
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue
+                displayValue={
+                  (isAr
+                    ? ROLES.find((r) => r.value === role)?.ar
+                    : ROLES.find((r) => r.value === role)?.en) ?? role
+                }
+              />
             </SelectTrigger>
             <SelectContent>
               {ROLES.map((r) => (
@@ -124,7 +130,15 @@ export function ManageAdminsClient({
             <label className="text-xs font-medium">{isAr ? 'الكلية' : 'College'}</label>
             <Select value={scopeId} onValueChange={(v) => setScopeId(v ?? '')}>
               <SelectTrigger>
-                <SelectValue placeholder="..." />
+                <SelectValue
+                  displayValue={
+                    scopeId
+                      ? ((isAr
+                          ? colleges.find((c) => c.id === scopeId)?.name_ar
+                          : colleges.find((c) => c.id === scopeId)?.name_en) ?? '...')
+                      : '...'
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {colleges.map((c) => (
@@ -141,7 +155,15 @@ export function ManageAdminsClient({
             <label className="text-xs font-medium">{isAr ? 'القسم' : 'Department'}</label>
             <Select value={scopeId} onValueChange={(v) => setScopeId(v ?? '')}>
               <SelectTrigger>
-                <SelectValue placeholder="..." />
+                <SelectValue
+                  displayValue={
+                    scopeId
+                      ? ((isAr
+                          ? departments.find((d) => d.id === scopeId)?.name_ar
+                          : departments.find((d) => d.id === scopeId)?.name_en) ?? '...')
+                      : '...'
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
                 {departments.map((d) => (

@@ -108,9 +108,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('workplace_type_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="workplace_type_id">
-              <SelectValue placeholder="—">
-                {lookupName(workplaceTypes, form.watch('workplace_type_id'), locale)}
-              </SelectValue>
+              <SelectValue
+                displayValue={lookupName(workplaceTypes, form.watch('workplace_type_id'), locale)}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -129,9 +129,13 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('university_center_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="university_center_id">
-              <SelectValue placeholder="—">
-                {lookupName(universityCenters, form.watch('university_center_id'), locale)}
-              </SelectValue>
+              <SelectValue
+                displayValue={lookupName(
+                  universityCenters,
+                  form.watch('university_center_id'),
+                  locale,
+                )}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -150,9 +154,7 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('college_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="college_id">
-              <SelectValue placeholder="—">
-                {lookupName(colleges, form.watch('college_id'), locale)}
-              </SelectValue>
+              <SelectValue displayValue={lookupName(colleges, form.watch('college_id'), locale)} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -172,9 +174,9 @@ export function AcademicTab({
             disabled={visibleDepartments.length === 0}
           >
             <SelectTrigger id="department_id">
-              <SelectValue placeholder="—">
-                {lookupName(departments, form.watch('department_id'), locale)}
-              </SelectValue>
+              <SelectValue
+                displayValue={lookupName(departments, form.watch('department_id'), locale)}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

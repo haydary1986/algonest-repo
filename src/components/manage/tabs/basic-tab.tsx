@@ -115,9 +115,7 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="gender_id">
-              <SelectValue placeholder="—">
-                {lookupName(genders, form.watch('gender_id'), locale)}
-              </SelectValue>
+              <SelectValue displayValue={lookupName(genders, form.watch('gender_id'), locale)} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -138,9 +136,9 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="academic_title_id">
-              <SelectValue placeholder="—">
-                {lookupName(academicTitles, form.watch('academic_title_id'), locale)}
-              </SelectValue>
+              <SelectValue
+                displayValue={lookupName(academicTitles, form.watch('academic_title_id'), locale)}
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

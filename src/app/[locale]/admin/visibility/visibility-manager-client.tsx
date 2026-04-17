@@ -92,7 +92,15 @@ export function VisibilityManagerClient({
                   disabled={isPending}
                 >
                   <SelectTrigger size="sm">
-                    <SelectValue />
+                    <SelectValue
+                      displayValue={
+                        (r.admin_visibility_override ?? '__null__') === '__null__'
+                          ? t.none
+                          : r.admin_visibility_override === 'force_show'
+                            ? t.forceShow
+                            : t.forceHide
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="__null__">{t.none}</SelectItem>

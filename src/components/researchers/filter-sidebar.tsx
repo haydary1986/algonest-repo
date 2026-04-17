@@ -103,7 +103,16 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           onValueChange={(v) => setParam('workplace_type', v)}
         >
           <SelectTrigger id="filter-workplace">
-            <SelectValue placeholder={t('all')} />
+            <SelectValue
+              displayValue={
+                filters.workplaceType
+                  ? nameFor(
+                      lookups.workplaceTypes.find((w) => w.id === filters.workplaceType)!,
+                      locale,
+                    )
+                  : t('all')
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -120,7 +129,13 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
         <Label htmlFor="filter-college">{t('college')}</Label>
         <Select value={filters.college ?? ALL_VALUE} onValueChange={setCollege}>
           <SelectTrigger id="filter-college">
-            <SelectValue placeholder={t('all')} />
+            <SelectValue
+              displayValue={
+                filters.college
+                  ? nameFor(lookups.colleges.find((c) => c.id === filters.college)!, locale)
+                  : t('all')
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -141,7 +156,13 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           disabled={visibleDepartments.length === 0}
         >
           <SelectTrigger id="filter-department">
-            <SelectValue placeholder={t('all')} />
+            <SelectValue
+              displayValue={
+                filters.department
+                  ? nameFor(visibleDepartments.find((d) => d.id === filters.department)!, locale)
+                  : t('all')
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -161,7 +182,16 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           onValueChange={(v) => setParam('academic_title', v)}
         >
           <SelectTrigger id="filter-title">
-            <SelectValue placeholder={t('all')} />
+            <SelectValue
+              displayValue={
+                filters.academicTitle
+                  ? nameFor(
+                      lookups.academicTitles.find((a) => a.id === filters.academicTitle)!,
+                      locale,
+                    )
+                  : t('all')
+              }
+            />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>

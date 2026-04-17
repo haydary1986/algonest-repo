@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Info } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { createClient } from '@/lib/supabase/client';
@@ -47,6 +48,10 @@ export function SignInForm({ next, error }: SignInFormProps) {
         <CardDescription>{t('description')}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
+        <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 dark:border-blue-900 dark:bg-blue-950/50">
+          <Info className="mt-0.5 size-4 shrink-0 text-blue-600 dark:text-blue-400" />
+          <p className="text-sm text-blue-800 dark:text-blue-300">{t('institutional_only')}</p>
+        </div>
         {error ? (
           <p className="text-destructive text-sm" role="alert">
             {t('error_generic')}
@@ -55,7 +60,6 @@ export function SignInForm({ next, error }: SignInFormProps) {
         <Button onClick={handleGoogle} disabled={loading} className="w-full">
           {loading ? tCommon('loading') : t('google')}
         </Button>
-        <p className="text-muted-foreground text-center text-xs">{t('institutional_only')}</p>
       </CardContent>
     </Card>
   );

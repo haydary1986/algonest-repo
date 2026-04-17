@@ -1,10 +1,7 @@
 'use client';
 
-// Task 98 — Validation errors dialog. Shown when a save action returns
-// fieldErrors from the server (defence-in-depth — RHF already validates
-// client-side, but Zod re-runs on the server inside actions.ts).
-
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { AlertCircle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -12,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { translateFieldName, translateErrorMessage } from '@/lib/manage/error-messages';
 
 export interface FieldErrorEntry {
   field: string;
@@ -26,17 +24,32 @@ interface ErrorsDialogProps {
 
 export function ErrorsDialog({ open, onOpenChange, errors }: ErrorsDialogProps) {
   const t = useTranslations('manage');
+  const locale = useLocale();
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t('errors_title')}</DialogTitle>
+          <DialogTitle className="flex items-center gap-2 text-destructive">
+            <AlertCircle className="size-5" />
+            {t('errors_title')}
+          </DialogTitle>
           <DialogDescription>{t('errors_body')}</DialogDescription>
         </DialogHeader>
-        <ul className="text-destructive max-h-64 space-y-1 overflow-y-auto text-sm">
+        <ul className="max-h-64 space-y-2 overflow-y-auto">
           {errors.map((e, i) => (
-            <li key={`${e.field}-${i}`}>
-              <span className="font-mono text-xs opacity-80">{e.field}</span> — {e.message}
+            <li
+              key={`${e.field}-${i}`}
+              className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2"
+            >
+              <AlertCircle className="mt-0.5 size-3.5 shrink-0 text-destructive" />
+              <div>
+                <span className="text-sm font-medium">{translateFieldName(e.field, locale)}</span>
+                <span className="text-sm text-destructive">
+                  {' '}
+                  — {translateErrorMessage(e.message, locale)}
+                </span>
+              </div>
             </li>
           ))}
         </ul>

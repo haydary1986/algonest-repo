@@ -2,8 +2,9 @@
 
 import { useState, useTransition } from 'react';
 import { Pencil, Plus, Trash } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { toast } from 'sonner';
+import { translateFieldName, translateErrorMessage } from '@/lib/manage/error-messages';
 import {
   Dialog,
   DialogContent,
@@ -272,6 +273,7 @@ interface FormProps<T> {
 }
 
 function WorkForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
+  const locale = useLocale();
   const tManage = useTranslations('manage');
   const [values, setValues] = useState(initial);
   const [isPending, startTransition] = useTransition();
@@ -284,7 +286,14 @@ function WorkForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
     startTransition(async () => {
       const r = await saveWork(values as Parameters<typeof saveWork>[0]);
       if (!r.ok) {
-        toast.error(r.error ?? Object.values(r.fieldErrors ?? {}).join('; '));
+        toast.error(
+          r.error ??
+            Object.entries(r.fieldErrors ?? {})
+              .map(
+                ([f, m]) => translateFieldName(f, locale) + ': ' + translateErrorMessage(m, locale),
+              )
+              .join(' | '),
+        );
         return;
       }
       toast.success(tManage('saved'));
@@ -363,6 +372,7 @@ function WorkForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
 }
 
 function CertForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
+  const locale = useLocale();
   const tManage = useTranslations('manage');
   const [values, setValues] = useState(initial);
   const [isPending, startTransition] = useTransition();
@@ -371,7 +381,14 @@ function CertForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
     startTransition(async () => {
       const r = await saveCert(values as Parameters<typeof saveCert>[0]);
       if (!r.ok) {
-        toast.error(r.error ?? Object.values(r.fieldErrors ?? {}).join('; '));
+        toast.error(
+          r.error ??
+            Object.entries(r.fieldErrors ?? {})
+              .map(
+                ([f, m]) => translateFieldName(f, locale) + ': ' + translateErrorMessage(m, locale),
+              )
+              .join(' | '),
+        );
         return;
       }
       toast.success(tManage('saved'));
@@ -427,6 +444,7 @@ function CertForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
 }
 
 function AwardForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
+  const locale = useLocale();
   const tManage = useTranslations('manage');
   const [values, setValues] = useState(initial);
   const [isPending, startTransition] = useTransition();
@@ -435,7 +453,14 @@ function AwardForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
     startTransition(async () => {
       const r = await saveAward(values as Parameters<typeof saveAward>[0]);
       if (!r.ok) {
-        toast.error(r.error ?? Object.values(r.fieldErrors ?? {}).join('; '));
+        toast.error(
+          r.error ??
+            Object.entries(r.fieldErrors ?? {})
+              .map(
+                ([f, m]) => translateFieldName(f, locale) + ': ' + translateErrorMessage(m, locale),
+              )
+              .join(' | '),
+        );
         return;
       }
       toast.success(tManage('saved'));
@@ -485,6 +510,7 @@ function AwardForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
 }
 
 function ProjectForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
+  const locale = useLocale();
   const tManage = useTranslations('manage');
   const [values, setValues] = useState(initial);
   const [isPending, startTransition] = useTransition();
@@ -493,7 +519,14 @@ function ProjectForm({ initial, onClose }: FormProps<Record<string, unknown>>) {
     startTransition(async () => {
       const r = await saveProject(values as Parameters<typeof saveProject>[0]);
       if (!r.ok) {
-        toast.error(r.error ?? Object.values(r.fieldErrors ?? {}).join('; '));
+        toast.error(
+          r.error ??
+            Object.entries(r.fieldErrors ?? {})
+              .map(
+                ([f, m]) => translateFieldName(f, locale) + ': ' + translateErrorMessage(m, locale),
+              )
+              .join(' | '),
+        );
         return;
       }
       toast.success(tManage('saved'));

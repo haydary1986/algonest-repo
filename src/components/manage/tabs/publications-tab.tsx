@@ -20,7 +20,8 @@ import {
   ChevronRight,
   ChevronLeft,
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { translateFieldName, translateErrorMessage } from '@/lib/manage/error-messages';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -184,7 +185,12 @@ function AddPublicationDialog({
     startTransition(async () => {
       const r = await savePublication(values as PublicationInput);
       if (!r.ok) {
-        toast.error(r.error ?? Object.values(r.fieldErrors ?? {}).join('; '));
+        toast.error(
+          r.error ??
+            Object.entries(r.fieldErrors ?? {})
+              .map(([f, m]) => translateFieldName(f, 'en') + ': ' + translateErrorMessage(m, 'en'))
+              .join(' | '),
+        );
         return;
       }
       toast.success(tManage('saved'));

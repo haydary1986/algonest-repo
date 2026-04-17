@@ -24,12 +24,33 @@ export default async function CompleteProfilePage({ params }: Props) {
   } = await supabase.auth.getUser();
   if (!user) redirect(`/${locale}/sign-in`);
 
-  const { data: profile } = await supabase
-    .from('researchers_owner')
-    .select('id, full_name_en, full_name_ar, college_id, department_id, academic_title_id')
-    .maybeSingle();
+  let profile = (
+    await supabase
+      .from('researchers_owner')
+      .select('id, full_name_en, full_name_ar, college_id, department_id, academic_title_id')
+      .maybeSingle()
+  ).data;
 
-  if (!profile) redirect(`/${locale}/sign-in`);
+  if (!profile) {
+    const emailLocal = (user.email ?? '').split('@')[0]?.toLowerCase() ?? 'user';
+    const username = emailLocal.replace(/[^a-z0-9-]/g, '-');
+    const fullName = user.user_metadata?.full_name ?? user.user_metadata?.name ?? emailLocal;
+    const { data: created } = await supabase
+      .from('researchers')
+      .insert({
+        user_id: user.id,
+        username,
+        full_name_en: fullName,
+        full_name_ar: fullName,
+        private_email: user.email,
+        is_public: false,
+      })
+      .select('id, full_name_en, full_name_ar, college_id, department_id, academic_title_id')
+      .maybeSingle();
+
+    if (!created) redirect(`/${locale}/sign-in`);
+    profile = created;
+  }
 
   const check = checkProfileComplete(profile);
   if (check.complete) redirect(`/${locale}/manage-profile`);

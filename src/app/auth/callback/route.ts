@@ -43,17 +43,37 @@ export async function GET(request: Request) {
     ]).catch(() => {});
   }
 
-  // Check if profile is complete — redirect to onboarding if not
+  // Check if profile exists and is complete
   const { data: profile } = await supabase
     .from('researchers_owner')
     .select('college_id, department_id, academic_title_id, full_name_en, full_name_ar')
     .maybeSingle();
 
-  if (profile) {
-    const check = checkProfileComplete(profile);
-    if (!check.complete) {
-      return NextResponse.redirect(new URL(`/${defaultLocale}/complete-profile`, origin));
+  if (!profile) {
+    // No researcher record — try to create one manually
+    if (user) {
+      const emailLocal = (user.email ?? '').split('@')[0]?.toLowerCase() ?? 'user';
+      const username = emailLocal.replace(/[^a-z0-9-]/g, '-');
+      const fullName = user.user_metadata?.full_name ?? user.user_metadata?.name ?? emailLocal;
+      await supabase
+        .from('researchers')
+        .insert({
+          user_id: user.id,
+          username,
+          full_name_en: fullName,
+          full_name_ar: fullName,
+          private_email: user.email,
+          is_public: false,
+        })
+        .select('id')
+        .maybeSingle();
     }
+    return NextResponse.redirect(new URL(`/${defaultLocale}/complete-profile`, origin));
+  }
+
+  const check = checkProfileComplete(profile);
+  if (!check.complete) {
+    return NextResponse.redirect(new URL(`/${defaultLocale}/complete-profile`, origin));
   }
 
   return NextResponse.redirect(new URL(next, origin));

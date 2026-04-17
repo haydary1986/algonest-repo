@@ -294,11 +294,16 @@ function AddPublicationDialog({
   );
 }
 
-// --- Google Scholar Quick Import (one-click upload) ---
+// --- Google Scholar One-Click Import ---
 function ScholarQuickImport() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
   const [showGuide, setShowGuide] = useState(false);
+
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : '';
+
+  // Bookmarklet code — scrapes Scholar + auto-submits to our API
+  const bookmarkletCode = `javascript:void(function(){if(!location.host.includes('scholar.google.com')){alert('Open your Google Scholar profile first!');return;}var p=[];document.querySelectorAll('#gsc_a_b .gsc_a_tr').forEach(function(r){var t=r.querySelector('.gsc_a_at');var g=r.querySelectorAll('.gs_gray');var y=r.querySelector('.gsc_a_h');var c=r.querySelector('.gsc_a_ac');if(!t)return;p.push({title:t.textContent.trim(),authors:(g[0]?g[0].textContent:'').split(',').map(function(s){return s.trim()}).filter(Boolean),journal_name:g[1]?g[1].textContent.trim():null,publication_year:y&&/^[0-9]{4}$/.test(y.textContent)?Number(y.textContent):null,scholar_citations:c&&/^[0-9]+$/.test(c.textContent.trim())?Number(c.textContent):0})});if(p.length===0){alert('No publications found. Make sure you are on your Scholar profile and publications are visible.');return;}var d={version:1,provider:'scholar',publications:p};var e=btoa(unescape(encodeURIComponent(JSON.stringify(d))));var f=document.createElement('form');f.method='POST';f.action='${siteUrl}/api/import/scholar-auto';var i=document.createElement('input');i.type='hidden';i.name='data';i.value=e;f.appendChild(i);document.body.appendChild(f);f.submit();}())`;
 
   function uploadFile(file: File) {
     startTransition(async () => {
@@ -308,7 +313,6 @@ function ScholarQuickImport() {
         ok?: boolean;
         inserted?: number;
         updated?: number;
-        skipped?: number;
         error?: string;
       };
       if (res.ok && json.ok) {
@@ -343,10 +347,35 @@ function ScholarQuickImport() {
           <DialogHeader>
             <DialogTitle>Import from Google Scholar</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 text-sm">
-            <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-              <p className="font-semibold">Step 1: Get your publications</p>
+          <div className="space-y-5 text-sm">
+            {/* Method 1: One-click bookmarklet */}
+            <div className="rounded-lg border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs font-bold">
+                  Easy
+                </span>
+                <p className="font-semibold">One-click import (recommended)</p>
+              </div>
               <ol className="list-decimal ms-5 space-y-2 text-muted-foreground">
+                <li>
+                  Drag this button to your <strong>bookmarks bar</strong>:
+                </li>
+              </ol>
+              <div className="flex justify-center py-2">
+                <a
+                  href={bookmarkletCode}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast.info('Drag this button to your bookmarks bar!');
+                  }}
+                  className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg hover:bg-primary/90 cursor-grab active:cursor-grabbing"
+                  draggable="true"
+                >
+                  <Upload className="size-4" />
+                  📚 Import to RIS
+                </a>
+              </div>
+              <ol className="list-decimal ms-5 space-y-2 text-muted-foreground" start={2}>
                 <li>
                   Open your{' '}
                   <a
@@ -358,41 +387,22 @@ function ScholarQuickImport() {
                     Google Scholar profile
                   </a>
                 </li>
-                <li>Click &quot;Show more&quot; until all publications are visible</li>
                 <li>
-                  Open browser DevTools (<kbd className="rounded bg-muted px-1 text-xs">F12</kbd> →
-                  Console)
+                  Click <strong>&quot;Show more&quot;</strong> until all publications visible
                 </li>
-                <li>Paste this script and press Enter:</li>
+                <li>
+                  Click the <strong>&quot;📚 Import to RIS&quot;</strong> bookmark
+                </li>
+                <li>Done! Publications import automatically ✅</li>
               </ol>
-              <div className="relative">
-                <pre className="bg-muted rounded-md p-3 text-[10px] max-h-32 overflow-auto">
-                  <code>{`(function(){var p=[];document.querySelectorAll('#gsc_a_b .gsc_a_tr').forEach(function(r){var t=r.querySelector('.gsc_a_at');var g=r.querySelectorAll('.gs_gray');var y=r.querySelector('.gsc_a_h');var c=r.querySelector('.gsc_a_ac');if(!t)return;p.push({title:t.textContent.trim(),authors:g[0]?g[0].textContent.split(',').map(s=>s.trim()):[],journal_name:g[1]?g[1].textContent.trim():null,publication_year:y&&/^\\d{4}$/.test(y.textContent)?+y.textContent:null,scholar_citations:c&&/^\\d+$/.test(c.textContent.trim())?+c.textContent:0})});var d={version:1,provider:'scholar',scraped_at:new Date().toISOString(),publications:p};var e=btoa(unescape(encodeURIComponent(JSON.stringify(d))));var b=new Blob([e]);var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='scholar-'+Date.now()+'.mrhenc';a.click();console.log('Exported',p.length,'publications')})();`}</code>
-                </pre>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="xs"
-                  className="absolute top-1 end-1"
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      `(function(){var p=[];document.querySelectorAll('#gsc_a_b .gsc_a_tr').forEach(function(r){var t=r.querySelector('.gsc_a_at');var g=r.querySelectorAll('.gs_gray');var y=r.querySelector('.gsc_a_h');var c=r.querySelector('.gsc_a_ac');if(!t)return;p.push({title:t.textContent.trim(),authors:g[0]?g[0].textContent.split(',').map(s=>s.trim()):[],journal_name:g[1]?g[1].textContent.trim():null,publication_year:y&&/^\\\\d{4}$/.test(y.textContent)?+y.textContent:null,scholar_citations:c&&/^\\\\d+$/.test(c.textContent.trim())?+c.textContent:0})});var d={version:1,provider:'scholar',scraped_at:new Date().toISOString(),publications:p};var e=btoa(unescape(encodeURIComponent(JSON.stringify(d))));var b=new Blob([e]);var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='scholar-'+Date.now()+'.mrhenc';a.click();console.log('Exported',p.length,'publications')})();`,
-                    );
-                    toast.success('Copied!');
-                  }}
-                >
-                  Copy
-                </Button>
-              </div>
-              <p className="text-muted-foreground">
-                A <code>.mrhenc</code> file will download automatically.
-              </p>
             </div>
 
+            {/* Method 2: File upload fallback */}
             <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-              <p className="font-semibold">Step 2: Upload the file</p>
+              <p className="font-semibold text-muted-foreground">Alternative: Upload file</p>
               <Button
                 type="button"
+                variant="outline"
                 onClick={() => {
                   setShowGuide(false);
                   fileRef.current?.click();
@@ -407,16 +417,12 @@ function ScholarQuickImport() {
                 )}
                 Upload .mrhenc file
               </Button>
-            </div>
-
-            <div className="text-center">
               <a
                 href="/extension/ris-scholar-importer.zip"
                 download
                 className="text-primary text-xs inline-flex items-center gap-1 hover:underline"
               >
-                <Download className="size-3" />
-                Or download Chrome extension (alternative)
+                <Download className="size-3" /> Or download Chrome extension
               </a>
             </div>
           </div>

@@ -6,42 +6,56 @@ import { createClient } from '@/lib/supabase/server';
 import { routing, type Locale } from '@/i18n/routing';
 import { buildLanguageAlternates, canonicalForLocale } from '@/lib/seo/site';
 import { Breadcrumbs, type BreadcrumbItem } from '@/components/seo/breadcrumbs';
-import { Link } from '@/i18n/navigation';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { BookOpen, ExternalLink, Quote } from 'lucide-react';
 
 export const revalidate = 3600;
+
+const OPENALEX_INSTITUTION_ID = 'I2801460691';
 
 interface SdgPageProps {
   params: Promise<{ locale: string; number: string }>;
 }
 
 async function fetchSdgGoal(goalNumber: number) {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from('un_sdg_goals')
-    .select('id, number, name_en, name_ar, color')
-    .eq('number', goalNumber)
-    .maybeSingle();
-  return data;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('un_sdg_goals')
+      .select('id, number, name_en, name_ar, color')
+      .eq('number', goalNumber)
+      .maybeSingle();
+    return data;
+  } catch {
+    return null;
+  }
 }
 
-async function fetchSdgResearchers(goalId: string) {
-  const supabase = await createClient();
-  const { data: links } = await supabase
-    .from('researcher_sdg_goals')
-    .select('researcher_id')
-    .eq('sdg_goal_id', goalId);
-  if (!links || links.length === 0) return [];
+interface OpenAlexWork {
+  title: string;
+  publication_year: number | null;
+  doi: string | null;
+  cited_by_count: number;
+  authorships: Array<{ author: { display_name: string } }>;
+  primary_location?: { source?: { display_name: string } } | null;
+}
 
-  const ids = links.map((l) => l.researcher_id);
-  const { data } = await supabase
-    .from('researchers_public')
-    .select('id, username, full_name_en, full_name_ar, profile_image, scopus_h_index')
-    .in('id', ids)
-    .order('scopus_h_index', { ascending: false, nullsFirst: false })
-    .limit(100);
-  return data ?? [];
+async function fetchSdgPublications(sdgNumber: number) {
+  try {
+    const res = await fetch(
+      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},sustainable_development_goals.id:https://metadata.un.org/sdg/${sdgNumber}&per_page=50&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,authorships,primary_location`,
+      { next: { revalidate: 3600 } },
+    );
+    if (!res.ok) return { total: 0, works: [] };
+    const d = await res.json();
+    return {
+      total: d.meta?.count ?? 0,
+      works: (d.results ?? []) as OpenAlexWork[],
+    };
+  } catch {
+    return { total: 0, works: [] };
+  }
 }
 
 export async function generateMetadata({ params }: SdgPageProps): Promise<Metadata> {
@@ -81,14 +95,12 @@ export default async function SdgPage({ params }: SdgPageProps) {
   if (!goal) notFound();
 
   const typedLocale = locale as Locale;
-  const goalName = typedLocale === 'ar' ? goal.name_ar : goal.name_en;
+  const isAr = typedLocale === 'ar';
+  const goalName = isAr ? goal.name_ar : goal.name_en;
 
-  let researchers: Awaited<ReturnType<typeof fetchSdgResearchers>> = [];
-  try {
-    researchers = await fetchSdgResearchers(goal.id);
-  } catch {
-    // Supabase unreachable -- render empty state.
-  }
+  const { total, works } = await fetchSdgPublications(goalNumber);
+
+  const totalCitations = works.reduce((sum, w) => sum + w.cited_by_count, 0);
 
   const breadcrumbs: BreadcrumbItem[] = [
     { href: '/researchers', label: 'researchers' },
@@ -98,41 +110,111 @@ export default async function SdgPage({ params }: SdgPageProps) {
   return (
     <main className="container mx-auto flex flex-col gap-6 px-4 py-8">
       <Breadcrumbs items={breadcrumbs} />
-      <div className="rounded-lg p-6" style={{ backgroundColor: goal.color }}>
-        <h1 className="text-2xl font-bold text-white">
-          SDG {goal.number}: {goalName}
-        </h1>
-        <p className="mt-1 text-sm text-white/80">
-          {researchers.length} researcher{researchers.length !== 1 ? 's' : ''}
-        </p>
+
+      <div className="rounded-xl p-6 shadow-lg" style={{ backgroundColor: goal.color }}>
+        <div className="flex items-start gap-4">
+          <span className="text-4xl font-black text-white/30">{goal.number}</span>
+          <div>
+            <h1 className="text-2xl font-bold text-white">{goalName}</h1>
+            <p className="mt-1 text-sm text-white/80">
+              SDG {goal.number} —{' '}
+              {isAr ? 'أهداف التنمية المستدامة' : 'Sustainable Development Goals'}
+            </p>
+          </div>
+        </div>
       </div>
 
-      {researchers.length === 0 ? (
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <Card>
+          <CardContent className="flex items-center gap-3 py-4">
+            <BookOpen className="size-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold">{total.toLocaleString(locale)}</p>
+              <p className="text-xs text-muted-foreground">
+                {isAr ? 'منشور بحثي' : 'Publications'}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex items-center gap-3 py-4">
+            <Quote className="size-5 text-primary" />
+            <div>
+              <p className="text-2xl font-bold">{totalCitations.toLocaleString(locale)}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? 'اقتباس' : 'Citations'}</p>
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="col-span-2 sm:col-span-1">
+          <CardContent className="flex items-center gap-3 py-4">
+            <Badge
+              variant="outline"
+              className="px-3 py-1 text-sm font-semibold"
+              style={{ borderColor: goal.color, color: goal.color }}
+            >
+              SDG {goal.number}
+            </Badge>
+            <p className="text-xs text-muted-foreground">
+              {isAr ? 'بيانات من OpenAlex' : 'Data from OpenAlex'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {works.length === 0 ? (
         <p className="text-muted-foreground py-12 text-center">
-          No researchers aligned with this goal yet.
+          {isAr
+            ? 'لا توجد منشورات مرتبطة بهذا الهدف بعد.'
+            : 'No publications linked to this goal yet.'}
         </p>
       ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {researchers.map((r) => {
-            const name = typedLocale === 'ar' ? r.full_name_ar : r.full_name_en;
-            const initials = name.slice(0, 2).toUpperCase();
+        <div className="space-y-3">
+          <h2 className="text-lg font-semibold">{isAr ? 'أبرز المنشورات' : 'Top Publications'}</h2>
+          {works.map((w, i) => {
+            const authors = (w.authorships ?? [])
+              .slice(0, 3)
+              .map((a) => a.author?.display_name)
+              .filter(Boolean)
+              .join(', ');
+            const journal = w.primary_location?.source?.display_name;
             return (
-              <Link key={r.id} href={`/researcher/${r.username}`}>
-                <Card className="hover:border-primary/40 transition-colors">
-                  <CardContent className="flex items-center gap-3 p-4">
-                    <Avatar className="size-10">
-                      <AvatarImage src={r.profile_image ?? undefined} alt={name} />
-                      <AvatarFallback>{initials}</AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0">
-                      <p className="truncate font-medium">{name}</p>
-                      {r.scopus_h_index !== null && (
-                        <p className="text-muted-foreground text-xs">h-index: {r.scopus_h_index}</p>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+              <Card key={i} className="hover:border-primary/30 transition-colors">
+                <CardContent className="space-y-2 py-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-sm font-medium leading-snug">{w.title}</h3>
+                    {w.publication_year ? (
+                      <span className="text-muted-foreground shrink-0 text-xs tabular-nums">
+                        {w.publication_year}
+                      </span>
+                    ) : null}
+                  </div>
+                  {authors ? (
+                    <p className="text-xs text-muted-foreground italic">
+                      {authors}
+                      {(w.authorships?.length ?? 0) > 3 ? ' et al.' : ''}
+                    </p>
+                  ) : null}
+                  {journal ? <p className="text-xs text-muted-foreground">{journal}</p> : null}
+                  <div className="flex items-center gap-3">
+                    {w.cited_by_count > 0 ? (
+                      <Badge variant="secondary" className="text-[10px]">
+                        {w.cited_by_count} {isAr ? 'اقتباس' : 'citations'}
+                      </Badge>
+                    ) : null}
+                    {w.doi ? (
+                      <a
+                        href={`https://doi.org/${w.doi.replace('https://doi.org/', '')}`}
+                        target="_blank"
+                        rel="noopener"
+                        className="text-primary inline-flex items-center gap-1 text-[10px] hover:underline"
+                      >
+                        <ExternalLink className="size-3" />
+                        DOI
+                      </a>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

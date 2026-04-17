@@ -284,6 +284,7 @@
     "forbidden": "You do not have admin privileges.",
     "nav": {
       "dashboard": "Dashboard",
+      "setup": "Setup guide",
       "admins": "Manage admins",
       "visibility": "Researcher visibility",
       "settings": "Homepage settings",

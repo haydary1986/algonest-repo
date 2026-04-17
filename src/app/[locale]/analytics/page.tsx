@@ -5,9 +5,22 @@ import { notFound } from 'next/navigation';
 import { routing, type Locale } from '@/i18n/routing';
 import { buildLanguageAlternates, canonicalForLocale } from '@/lib/seo/site';
 import { getInstitutionAnalytics } from '@/lib/openalex/analytics';
+import { createClient } from '@/lib/supabase/server';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Quote, Users, TrendingUp, Unlock, Lock } from 'lucide-react';
+import {
+  BookOpen,
+  Quote,
+  Users,
+  TrendingUp,
+  Unlock,
+  Lock,
+  ExternalLink,
+  Building2,
+  Trophy,
+  Clock,
+  Tag,
+} from 'lucide-react';
 
 export const revalidate = 1800;
 
@@ -33,6 +46,16 @@ export async function generateMetadata({
   };
 }
 
+interface CollegeStats {
+  name: string;
+  count: number;
+}
+interface DeptStats {
+  name: string;
+  college: string;
+  count: number;
+}
+
 export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
@@ -40,6 +63,51 @@ export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
 
   const isAr = locale === 'ar';
   const data = await getInstitutionAnalytics();
+
+  // Local DB: top colleges & departments
+  let topColleges: CollegeStats[] = [];
+  let topDepts: DeptStats[] = [];
+  try {
+    const supabase = await createClient();
+    const [researchers, colleges, departments] = await Promise.all([
+      supabase
+        .from('researchers')
+        .select('college_id, department_id')
+        .not('college_id', 'is', null),
+      supabase.from('colleges').select('id, name_en, name_ar'),
+      supabase.from('departments').select('id, name_en, name_ar, college_id'),
+    ]);
+
+    const colMap = new Map((colleges.data ?? []).map((c) => [c.id, isAr ? c.name_ar : c.name_en]));
+    const deptMap = new Map(
+      (departments.data ?? []).map((d) => [
+        d.id,
+        { name: isAr ? d.name_ar : d.name_en, college_id: d.college_id },
+      ]),
+    );
+
+    const colCounts: Record<string, number> = {};
+    const deptCounts: Record<string, number> = {};
+    for (const r of researchers.data ?? []) {
+      if (r.college_id)
+        colCounts[r.college_id as string] = (colCounts[r.college_id as string] ?? 0) + 1;
+      if (r.department_id)
+        deptCounts[r.department_id as string] = (deptCounts[r.department_id as string] ?? 0) + 1;
+    }
+
+    topColleges = Object.entries(colCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 6)
+      .map(([id, count]) => ({ name: colMap.get(id) ?? id, count }));
+
+    topDepts = Object.entries(deptCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 8)
+      .map(([id, count]) => {
+        const d = deptMap.get(id);
+        return { name: d?.name ?? id, college: colMap.get(d?.college_id ?? '') ?? '', count };
+      });
+  } catch {}
 
   if (!data) {
     return (
@@ -200,6 +268,181 @@ export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
                 </span>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Top Researchers */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Trophy className="size-4 text-yellow-500" />
+              {isAr ? 'الباحثون الأكثر نشاطاً' : 'Most Active Researchers'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {data.topAuthors.map((a, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                      {i + 1}
+                    </span>
+                    <span className="text-xs font-medium">{a.name}</span>
+                  </div>
+                  <div className="flex gap-3 text-[10px] text-muted-foreground">
+                    <span>h:{a.hIndex}</span>
+                    <span>
+                      {a.citations.toLocaleString(locale)} {isAr ? 'اقتباس' : 'cit.'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Top Research Topics */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Tag className="size-4 text-primary" />
+              {isAr ? 'أبرز المواضيع البحثية' : 'Top Research Topics'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-1.5">
+              {data.topTopics.map((t, i) => (
+                <Badge key={i} variant="secondary" className="text-[10px]">
+                  {t.name} <span className="ms-1 text-muted-foreground">({t.count})</span>
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Top Colleges */}
+        {topColleges.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Building2 className="size-4 text-primary" />
+                {isAr ? 'الكليات الأكثر نشاطاً' : 'Most Active Colleges'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {topColleges.map((c, i) => {
+                const maxC = topColleges[0]?.count ?? 1;
+                const pct = (c.count / maxC) * 100;
+                return (
+                  <div key={i} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span>{c.name}</span>
+                      <span className="text-muted-foreground tabular-nums">
+                        {c.count} {isAr ? 'باحث' : 'researchers'}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-blue-500/70"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Top Departments */}
+        {topDepts.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Building2 className="size-4 text-primary" />
+                {isAr ? 'الأقسام الأكثر نشاطاً' : 'Most Active Departments'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {topDepts.map((d, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-2"
+                >
+                  <div>
+                    <span className="text-xs font-medium">{d.name}</span>
+                    <span className="text-[10px] text-muted-foreground ms-1.5">{d.college}</span>
+                  </div>
+                  <Badge variant="outline" className="text-[10px] tabular-nums">
+                    {d.count}
+                  </Badge>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Recent Publications */}
+        <Card className="md:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-sm">
+              <Clock className="size-4 text-primary" />
+              {isAr ? 'آخر البحوث المنشورة' : 'Latest Publications'}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {data.recentWorks.map((w, i) => {
+              const doiUrl = w.doi
+                ? `https://doi.org/${w.doi.replace('https://doi.org/', '')}`
+                : null;
+              return (
+                <a
+                  key={i}
+                  href={doiUrl ?? '#'}
+                  target={doiUrl ? '_blank' : undefined}
+                  rel={doiUrl ? 'noopener' : undefined}
+                  className="block rounded-lg border p-3 transition hover:border-primary/30 hover:bg-muted/30"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <h4 className="text-xs font-medium leading-snug">{w.title}</h4>
+                    {w.year && (
+                      <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
+                        {w.year}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground italic mt-1">
+                    {w.authors.join(', ')}
+                    {w.authors.length >= 3 ? ' et al.' : ''}
+                  </p>
+                  {w.journal && <p className="text-[10px] text-muted-foreground">{w.journal}</p>}
+                  <div className="flex gap-2 mt-1.5">
+                    {w.citations > 0 && (
+                      <Badge variant="secondary" className="text-[9px]">
+                        {w.citations} {isAr ? 'اقتباس' : 'citations'}
+                      </Badge>
+                    )}
+                    {w.isOa && (
+                      <Badge
+                        variant="outline"
+                        className="text-[9px] text-green-600 border-green-300"
+                      >
+                        OA
+                      </Badge>
+                    )}
+                    {doiUrl && (
+                      <span className="text-primary inline-flex items-center gap-0.5 text-[9px]">
+                        <ExternalLink className="size-2.5" />
+                        DOI
+                      </span>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
           </CardContent>
         </Card>
       </div>

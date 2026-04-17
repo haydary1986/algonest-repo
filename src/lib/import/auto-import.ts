@@ -1,19 +1,16 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 
 const OPENALEX_API = 'https://api.openalex.org';
+const INSTITUTION_ID = 'I2801460691';
+const INSTITUTION_DOMAIN = 'uoturath.edu.iq';
 
 interface OpenAlexAuthor {
   id: string;
   display_name: string;
   works_count: number;
   cited_by_count: number;
-  summary_stats?: {
-    h_index?: number;
-    '2yr_mean_citedness'?: number;
-  };
-  affiliations?: Array<{
-    institution?: { display_name?: string };
-  }>;
+  summary_stats?: { h_index?: number };
+  last_known_institutions?: Array<{ id?: string; display_name?: string }>;
   works_api_url?: string;
 }
 
@@ -29,70 +26,62 @@ interface OpenAlexWork {
   cited_by_count?: number;
   authorships?: Array<{
     author?: { display_name?: string };
+    institutions?: Array<{ id?: string }>;
   }>;
-  type?: string;
+}
+
+function isAffiliated(author: OpenAlexAuthor): boolean {
+  return (author.last_known_institutions ?? []).some(
+    (inst) =>
+      inst.id === `https://openalex.org/${INSTITUTION_ID}` ||
+      (inst.display_name ?? '').includes('Al-Turath'),
+  );
 }
 
 export async function autoImportForUser(
   userId: string,
   email: string,
-): Promise<{
-  imported: boolean;
-  publications: number;
-  error?: string;
-}> {
+): Promise<{ imported: boolean; publications: number; error?: string }> {
   try {
     const supabase = createAdminClient();
 
-    // Check if already imported
     const { data: researcher } = await supabase
       .from('researchers')
-      .select('id, openalex_last_synced_at')
+      .select('id, full_name_en, openalex_last_synced_at')
       .eq('user_id', userId)
       .maybeSingle();
 
     if (!researcher) return { imported: false, publications: 0, error: 'no_profile' };
     if (researcher.openalex_last_synced_at) return { imported: false, publications: 0 };
 
-    // Search OpenAlex by email
-    const searchUrl = `${OPENALEX_API}/authors?filter=last_known_institutions.id:any&search=${encodeURIComponent(email)}&mailto=ris@uoturath.edu.iq`;
-    const searchRes = await fetch(searchUrl, { cache: 'no-store' });
-
+    const emailDomain = email.split('@')[1] ?? '';
     let author: OpenAlexAuthor | null = null;
 
-    if (searchRes.ok) {
-      const data = (await searchRes.json()) as { results?: OpenAlexAuthor[] };
-      // Find best match by email domain
-      const emailDomain = email.split('@')[1] ?? '';
-      author =
-        data.results?.find((a) => {
-          const name = a.display_name?.toLowerCase() ?? '';
-          return name.length > 2;
-        }) ??
-        data.results?.[0] ??
-        null;
+    // Strategy 1: Search by institutional email
+    if (emailDomain === INSTITUTION_DOMAIN) {
+      const emailRes = await fetch(
+        `${OPENALEX_API}/authors?search=${encodeURIComponent(email)}&mailto=ris@${INSTITUTION_DOMAIN}`,
+        { cache: 'no-store' },
+      );
+      if (emailRes.ok) {
+        const data = (await emailRes.json()) as { results?: OpenAlexAuthor[] };
+        author = data.results?.find(isAffiliated) ?? null;
+      }
     }
 
-    // Also try by name from researcher record
-    if (!author) {
-      const { data: profile } = await supabase
-        .from('researchers')
-        .select('full_name_en')
-        .eq('id', researcher.id)
-        .maybeSingle();
-
-      if (profile?.full_name_en) {
-        const nameUrl = `${OPENALEX_API}/authors?search=${encodeURIComponent(profile.full_name_en)}&mailto=ris@uoturath.edu.iq`;
-        const nameRes = await fetch(nameUrl, { cache: 'no-store' });
-        if (nameRes.ok) {
-          const data = (await nameRes.json()) as { results?: OpenAlexAuthor[] };
-          author = data.results?.[0] ?? null;
-        }
+    // Strategy 2: Search by name + filter by institution
+    if (!author && researcher.full_name_en) {
+      const nameRes = await fetch(
+        `${OPENALEX_API}/authors?search=${encodeURIComponent(researcher.full_name_en)}&filter=last_known_institutions.id:${INSTITUTION_ID}&mailto=ris@${INSTITUTION_DOMAIN}`,
+        { cache: 'no-store' },
+      );
+      if (nameRes.ok) {
+        const data = (await nameRes.json()) as { results?: OpenAlexAuthor[] };
+        author = data.results?.find(isAffiliated) ?? null;
       }
     }
 
     if (!author) {
-      // Mark as synced to avoid retrying
       await supabase
         .from('researchers')
         .update({ openalex_last_synced_at: new Date().toISOString() })
@@ -100,7 +89,6 @@ export async function autoImportForUser(
       return { imported: false, publications: 0 };
     }
 
-    // Update researcher metrics
     await supabase
       .from('researchers')
       .update({
@@ -111,8 +99,8 @@ export async function autoImportForUser(
       })
       .eq('id', researcher.id);
 
-    // Fetch publications (up to 50)
-    const worksUrl = `${OPENALEX_API}/works?filter=author.id:${author.id}&per_page=50&sort=publication_year:desc&mailto=ris@uoturath.edu.iq`;
+    // Fetch publications — only those where the author is affiliated with our institution
+    const worksUrl = `${OPENALEX_API}/works?filter=author.id:${author.id},institutions.id:${INSTITUTION_ID}&per_page=50&sort=publication_year:desc&mailto=ris@${INSTITUTION_DOMAIN}`;
     const worksRes = await fetch(worksUrl, { cache: 'no-store' });
 
     let pubCount = 0;
@@ -153,10 +141,7 @@ export async function autoImportForUser(
 export async function autoImportFromOrcid(
   userId: string,
   email: string,
-): Promise<{
-  imported: boolean;
-  publications: number;
-}> {
+): Promise<{ imported: boolean; publications: number }> {
   try {
     const supabase = createAdminClient();
 
@@ -167,7 +152,6 @@ export async function autoImportFromOrcid(
       .maybeSingle();
     if (!researcher) return { imported: false, publications: 0 };
 
-    // Search ORCID by email (public API, no auth needed)
     const searchRes = await fetch(
       `https://pub.orcid.org/v3.0/search/?q=email:${encodeURIComponent(email)}`,
       { headers: { Accept: 'application/json' }, cache: 'no-store' },
@@ -180,7 +164,6 @@ export async function autoImportFromOrcid(
     const orcidId = searchData.result?.[0]?.['orcid-identifier']?.path;
     if (!orcidId) return { imported: false, publications: 0 };
 
-    // Fetch works
     const worksRes = await fetch(`https://pub.orcid.org/v3.0/${orcidId}/works`, {
       headers: { Accept: 'application/json' },
       cache: 'no-store',
@@ -216,7 +199,6 @@ export async function autoImportFromOrcid(
 
     if (pubs.length === 0) return { imported: false, publications: 0 };
 
-    // Save ORCID ID to social profiles
     await supabase.from('researcher_social_profiles').upsert(
       {
         researcher_id: researcher.id,
@@ -228,11 +210,10 @@ export async function autoImportFromOrcid(
       { onConflict: 'researcher_id,platform' },
     );
 
-    // Import publications
     const { data: result } = await supabase.rpc('merge_publications', {
       p_researcher_id: researcher.id,
       p_publications: pubs,
-      p_source_name: 'openalex',
+      p_source_name: 'orcid',
     });
 
     return { imported: true, publications: (result as { inserted?: number })?.inserted ?? 0 };

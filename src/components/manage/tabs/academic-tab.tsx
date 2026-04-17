@@ -32,6 +32,12 @@ interface AcademicTabProps {
 
 const NULL_VALUE = '__none__';
 
+function lookupName(items: BilingualLookup[], id: string | null | undefined, locale: 'en' | 'ar') {
+  if (!id) return '—';
+  const item = items.find((i) => i.id === id);
+  return item ? (locale === 'ar' ? item.name_ar : item.name_en) : '—';
+}
+
 export function AcademicTab({
   initial,
   workplaceTypes,
@@ -102,7 +108,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('workplace_type_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="workplace_type_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(workplaceTypes, form.watch('workplace_type_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -121,7 +129,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('university_center_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="university_center_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(universityCenters, form.watch('university_center_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -140,7 +150,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('college_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="college_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(colleges, form.watch('college_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -160,7 +172,9 @@ export function AcademicTab({
             disabled={visibleDepartments.length === 0}
           >
             <SelectTrigger id="department_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(departments, form.watch('department_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

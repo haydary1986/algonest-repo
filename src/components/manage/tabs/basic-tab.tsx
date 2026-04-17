@@ -31,6 +31,12 @@ interface BasicTabProps {
 
 const NULL_VALUE = '__none__';
 
+function lookupName(items: BilingualLookup[], id: string | null | undefined, locale: 'en' | 'ar') {
+  if (!id) return '—';
+  const item = items.find((i) => i.id === id);
+  return item ? (locale === 'ar' ? item.name_ar : item.name_en) : '—';
+}
+
 export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabProps) {
   const t = useTranslations('manage.basic');
   const tManage = useTranslations('manage');
@@ -109,7 +115,9 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="gender_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(genders, form.watch('gender_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -130,7 +138,9 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="academic_title_id">
-              <SelectValue />
+              <SelectValue placeholder="—">
+                {lookupName(academicTitles, form.watch('academic_title_id'), locale)}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

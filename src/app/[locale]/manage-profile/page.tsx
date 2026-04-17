@@ -145,21 +145,6 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
       .order('display_order'),
   ]);
 
-  const dbErrors = [
-    pubsRes.error && `publications: ${pubsRes.error.message}`,
-    workRes.error && `work: ${workRes.error.message}`,
-    certsRes.error && `certs: ${certsRes.error.message}`,
-    awardsRes.error && `awards: ${awardsRes.error.message}`,
-    projectsRes.error && `projects: ${projectsRes.error.message}`,
-    skillsRes.error && `skills: ${skillsRes.error.message}`,
-    langsRes.error && `langs: ${langsRes.error.message}`,
-    socialsRes.error && `socials: ${socialsRes.error.message}`,
-  ].filter(Boolean);
-
-  if (dbErrors.length > 0) {
-    return <DebugError step="DB queries" error={dbErrors.join(' | ')} />;
-  }
-
   const publications = (pubsRes.data ?? []) as PublicationRow[];
   const work = (workRes.data ?? []) as WorkExperienceRow[];
   const certifications = (certsRes.data ?? []) as CertificationRow[];
@@ -285,27 +270,6 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
           />
         </TabsContent>
       </Tabs>
-    </main>
-  );
-}
-
-function DebugError({ step, error }: { step: string; error: unknown }) {
-  const msg = error instanceof Error ? error.message : String(error);
-  const stack = error instanceof Error ? error.stack : undefined;
-  return (
-    <main className="container mx-auto px-4 py-12">
-      <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-6 space-y-3">
-        <h2 className="text-lg font-semibold text-destructive">Debug: Error at [{step}]</h2>
-        <pre className="text-xs text-destructive whitespace-pre-wrap break-all">{msg}</pre>
-        {stack ? (
-          <details>
-            <summary className="text-xs text-muted-foreground cursor-pointer">Stack trace</summary>
-            <pre className="mt-2 text-[10px] text-muted-foreground whitespace-pre-wrap break-all">
-              {stack}
-            </pre>
-          </details>
-        ) : null}
-      </div>
     </main>
   );
 }

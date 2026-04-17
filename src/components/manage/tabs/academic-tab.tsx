@@ -6,13 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { FormRow } from '@/components/manage/form-row';
 import { ErrorsDialog, type FieldErrorEntry } from '@/components/manage/errors-dialog';
@@ -108,9 +102,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('workplace_type_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="workplace_type_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(workplaceTypes, form.watch('workplace_type_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -129,9 +123,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('university_center_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="university_center_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(universityCenters, form.watch('university_center_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -150,9 +144,9 @@ export function AcademicTab({
             onValueChange={(v) => setSelect('college_id', v ?? NULL_VALUE)}
           >
             <SelectTrigger id="college_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(colleges, form.watch('college_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -172,9 +166,9 @@ export function AcademicTab({
             disabled={visibleDepartments.length === 0}
           >
             <SelectTrigger id="department_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(departments, form.watch('department_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

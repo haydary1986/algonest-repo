@@ -6,13 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { ImageUpload } from '@/components/manage/image-upload';
 import { FormRow } from '@/components/manage/form-row';
@@ -115,9 +109,9 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="gender_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(genders, form.watch('gender_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>
@@ -138,9 +132,9 @@ export function BasicTab({ initial, genders, academicTitles, locale }: BasicTabP
             }
           >
             <SelectTrigger id="academic_title_id">
-              <SelectValue placeholder="—">
+              <span className="flex flex-1 text-start">
                 {lookupName(academicTitles, form.watch('academic_title_id'), locale)}
-              </SelectValue>
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={NULL_VALUE}>—</SelectItem>

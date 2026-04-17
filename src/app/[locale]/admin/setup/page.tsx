@@ -5,9 +5,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { createClient } from '@/lib/supabase/server';
 import {
   CheckCircle,
-  XCircle,
   ExternalLink,
   Key,
   Globe,
@@ -35,7 +35,27 @@ interface ServiceCheck {
   linkLabel?: string;
 }
 
-function getServices(): ServiceCheck[] {
+async function getServices(): Promise<ServiceCheck[]> {
+  const dbSettings: Record<string, string> = {};
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('app_settings')
+      .select('key, value')
+      .in('key', [
+        'integration.sentry.dsn',
+        'integration.orcid.client_id',
+        'integration.orcid.client_secret',
+        'integration.scopus.api_key',
+        'integration.google.site_verification',
+        'integration.indexnow.key',
+      ]);
+    for (const row of data ?? []) {
+      const val = typeof row.value === 'string' ? row.value.replace(/^"|"$/g, '') : '';
+      if (val && val !== '""' && val !== 'null') dbSettings[row.key] = val;
+    }
+  } catch {}
+
   return [
     {
       name: 'Supabase (Database + Auth + Storage)',
@@ -103,22 +123,18 @@ function getServices(): ServiceCheck[] {
       name: 'Sentry (Error monitoring)',
       nameAr: 'Sentry (مراقبة الأخطاء)',
       icon: <Shield className="size-5" />,
-      configured: Boolean(process.env.NEXT_PUBLIC_SENTRY_DSN),
+      configured: Boolean(
+        process.env.NEXT_PUBLIC_SENTRY_DSN || dbSettings['integration.sentry.dsn'],
+      ),
       required: false,
-      envVars: ['NEXT_PUBLIC_SENTRY_DSN', 'SENTRY_ORG', 'SENTRY_PROJECT', 'SENTRY_AUTH_TOKEN'],
+      envVars: ['NEXT_PUBLIC_SENTRY_DSN'],
       steps: [
-        'Sign up at sentry.io (free tier is sufficient) — or self-host Sentry.',
-        'Create a Next.js project.',
-        'Copy the DSN from Project Settings → Client Keys.',
-        'Create an Auth Token from Settings → User Auth Tokens (for source maps).',
-        'Add all 4 env vars to Coolify.',
+        'Go to Admin → Integrations and enter your Sentry DSN.',
+        'Or add NEXT_PUBLIC_SENTRY_DSN env var to Coolify.',
       ],
       stepsAr: [
-        'سجّل في sentry.io (الخطة المجانية كافية) — أو ثبّت Sentry محلياً.',
-        'أنشئ مشروع Next.js.',
-        'انسخ DSN من Project Settings → Client Keys.',
-        'أنشئ Auth Token من Settings → User Auth Tokens (لرفع source maps).',
-        'أضف المتغيرات الأربعة إلى Coolify.',
+        'اذهب إلى الإدارة → التكاملات وأدخل Sentry DSN.',
+        'أو أضف متغير NEXT_PUBLIC_SENTRY_DSN في Coolify.',
       ],
       link: 'https://sentry.io',
       linkLabel: 'Sentry',
@@ -127,22 +143,19 @@ function getServices(): ServiceCheck[] {
       name: 'ORCID (Publication import from ORCID)',
       nameAr: 'ORCID (استيراد المنشورات من ORCID)',
       icon: <BookOpen className="size-5" />,
-      configured: Boolean(process.env.ORCID_CLIENT_ID && process.env.ORCID_CLIENT_SECRET),
+      configured: Boolean(
+        (process.env.ORCID_CLIENT_ID || dbSettings['integration.orcid.client_id']) &&
+        (process.env.ORCID_CLIENT_SECRET || dbSettings['integration.orcid.client_secret']),
+      ),
       required: false,
       envVars: ['ORCID_CLIENT_ID', 'ORCID_CLIENT_SECRET'],
       steps: [
-        'Sign up at orcid.org/developer-tools (free for public API).',
-        'Register an app.',
-        'Redirect URI: https://yourdomain.com/api/auth/orcid/callback',
-        'Scope: /read-limited',
-        'Copy Client ID + Client Secret → add to Coolify env vars.',
+        'Go to Admin → Integrations and enter your ORCID Client ID and Secret.',
+        'Or add env vars to Coolify.',
       ],
       stepsAr: [
-        'سجّل في orcid.org/developer-tools (مجاني للـ API العام).',
-        'أنشئ تطبيقاً.',
-        'Redirect URI: https://yourdomain.com/api/auth/orcid/callback',
-        'Scope: /read-limited',
-        'انسخ Client ID و Client Secret → أضفهما لمتغيرات Coolify.',
+        'اذهب إلى الإدارة → التكاملات وأدخل ORCID Client ID و Secret.',
+        'أو أضف المتغيرات في Coolify.',
       ],
       link: 'https://orcid.org/developer-tools',
       linkLabel: 'ORCID Developer Portal',
@@ -151,20 +164,16 @@ function getServices(): ServiceCheck[] {
       name: 'Scopus API (Publication import from Scopus)',
       nameAr: 'Scopus API (استيراد المنشورات من Scopus)',
       icon: <BarChart3 className="size-5" />,
-      configured: Boolean(process.env.SCOPUS_API_KEY),
+      configured: Boolean(process.env.SCOPUS_API_KEY || dbSettings['integration.scopus.api_key']),
       required: false,
       envVars: ['SCOPUS_API_KEY'],
       steps: [
-        'Sign up at dev.elsevier.com (free for academic use).',
-        'Create an API Key.',
-        'Limits: 20,000 queries/week (institutional), 9 req/sec.',
-        'Add SCOPUS_API_KEY to Coolify env vars.',
+        'Go to Admin → Integrations and enter your Scopus API Key.',
+        'Or add SCOPUS_API_KEY env var to Coolify.',
       ],
       stepsAr: [
-        'سجّل في dev.elsevier.com (مجاني للاستخدام الأكاديمي).',
-        'أنشئ API Key.',
-        'الحدود: 20,000 استعلام/أسبوع (مؤسسي)، 9 طلب/ثانية.',
-        'أضف SCOPUS_API_KEY لمتغيرات Coolify.',
+        'اذهب إلى الإدارة → التكاملات وأدخل Scopus API Key.',
+        'أو أضف SCOPUS_API_KEY في Coolify.',
       ],
       link: 'https://dev.elsevier.com/',
       linkLabel: 'Elsevier Developer Portal',
@@ -173,24 +182,18 @@ function getServices(): ServiceCheck[] {
       name: 'Google Search Console (SEO indexing)',
       nameAr: 'Google Search Console (فهرسة SEO)',
       icon: <Search className="size-5" />,
-      configured: Boolean(process.env.GOOGLE_SITE_VERIFICATION),
+      configured: Boolean(
+        process.env.GOOGLE_SITE_VERIFICATION || dbSettings['integration.google.site_verification'],
+      ),
       required: false,
       envVars: ['GOOGLE_SITE_VERIFICATION'],
       steps: [
-        'Go to search.google.com/search-console.',
-        'Add a property for your domain.',
-        'Choose HTML tag verification.',
-        'Copy the content="..." value.',
-        'Add as GOOGLE_SITE_VERIFICATION env var.',
-        'Submit sitemap: https://yourdomain.com/sitemap.xml',
+        'Go to Admin → Integrations and enter your verification code.',
+        'Or add GOOGLE_SITE_VERIFICATION env var to Coolify.',
       ],
       stepsAr: [
-        'افتح search.google.com/search-console.',
-        'أضف property للنطاق.',
-        'اختر التحقق بـ HTML tag.',
-        'انسخ قيمة content="..." من الـ meta tag.',
-        'أضفها كمتغير GOOGLE_SITE_VERIFICATION.',
-        'قدّم sitemap: https://yourdomain.com/sitemap.xml',
+        'اذهب إلى الإدارة → التكاملات وأدخل كود التحقق.',
+        'أو أضف GOOGLE_SITE_VERIFICATION في Coolify.',
       ],
       link: 'https://search.google.com/search-console',
       linkLabel: 'Google Search Console',
@@ -199,18 +202,16 @@ function getServices(): ServiceCheck[] {
       name: 'IndexNow (Bing/Yandex fast indexing)',
       nameAr: 'IndexNow (فهرسة سريعة لـ Bing/Yandex)',
       icon: <Key className="size-5" />,
-      configured: Boolean(process.env.INDEXNOW_KEY),
+      configured: Boolean(process.env.INDEXNOW_KEY || dbSettings['integration.indexnow.key']),
       required: false,
       envVars: ['INDEXNOW_KEY'],
       steps: [
-        'Generate a key: openssl rand -hex 16',
-        'Create a file public/{key}.txt containing only the key.',
-        'Add INDEXNOW_KEY env var with the same value.',
+        'Go to Admin → Integrations and enter your IndexNow key.',
+        'Or add INDEXNOW_KEY env var to Coolify.',
       ],
       stepsAr: [
-        'ولّد مفتاحاً: openssl rand -hex 16',
-        'أنشئ ملف public/{key}.txt يحتوي المفتاح فقط.',
-        'أضف متغير INDEXNOW_KEY بنفس القيمة.',
+        'اذهب إلى الإدارة → التكاملات وأدخل مفتاح IndexNow.',
+        'أو أضف INDEXNOW_KEY في Coolify.',
       ],
     },
   ];
@@ -226,7 +227,7 @@ export default async function SetupPage({ params }: SetupPageProps) {
   setRequestLocale(locale);
 
   const isAr = locale === 'ar';
-  const services = getServices();
+  const services = await getServices();
   const configuredCount = services.filter((s) => s.configured).length;
 
   return (

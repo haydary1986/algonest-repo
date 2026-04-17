@@ -16,6 +16,7 @@ const NAV_KEYS = [
   'setup',
   'integrations',
   'branding',
+  'users',
   'admins',
   'visibility',
   'settings',

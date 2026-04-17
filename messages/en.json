@@ -285,6 +285,7 @@
     "nav": {
       "dashboard": "Dashboard",
       "setup": "Setup guide",
+      "users": "User management",
       "admins": "Manage admins",
       "visibility": "Researcher visibility",
       "settings": "Homepage settings",

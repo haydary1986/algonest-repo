@@ -338,5 +338,5 @@ See [SECURITY.md](SECURITY.md) for vulnerability reporting.
 ---
 
 <p align="center">
-  Built for the University of AL-Turath Research Community
+  Built for the AL-Turath University Research Community
 </p>

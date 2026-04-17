@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { buttonVariants } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
-import { CONTINENTS, IRAQ } from './globe-data';
+import { LAND_POLYGONS, IRAQ_POLYGON } from './globe-data';
 
 function seededRandom(seed: number): number {
   const x = Math.sin(seed) * 10000;
@@ -69,15 +69,11 @@ export function Hero() {
     const globeCenterY = () => h * 0.5;
     const globeRadius = () => Math.min(w, h) * 0.3;
 
-    // Convert degree coords to radians for continents
-    const continentPaths = CONTINENTS.map((c) => ({
-      name: c.name,
-      points: c.points.map(([lat, lng]) => ({
-        lat: (lat * Math.PI) / 180,
-        lng: (lng * Math.PI) / 180,
-      })),
-    }));
-    const iraqPath = IRAQ.map(([lat, lng]) => ({
+    // Convert degree coords to radians
+    const landPaths = LAND_POLYGONS.map((poly) =>
+      poly.map(([lat, lng]) => ({ lat: (lat * Math.PI) / 180, lng: (lng * Math.PI) / 180 })),
+    );
+    const iraqPath = IRAQ_POLYGON.map(([lat, lng]) => ({
       lat: (lat * Math.PI) / 180,
       lng: (lng * Math.PI) / 180,
     }));
@@ -181,16 +177,19 @@ export function Hero() {
         ctx!.stroke();
       }
 
-      // Continent filled shapes
-      for (const continent of continentPaths) {
+      // Land polygons (real GeoJSON outlines)
+      for (const poly of landPaths) {
         ctx!.beginPath();
         let first = true;
-        let allBehind = true;
-        for (const p of continent.points) {
+        let visible = false;
+        for (const p of poly) {
           const rl = p.lng + globeRotation;
           const z3d = Math.cos(p.lat) * Math.cos(rl);
-          if (z3d < -0.05) continue;
-          allBehind = false;
+          if (z3d < -0.05) {
+            first = true;
+            continue;
+          }
+          visible = true;
           const px = cx + Math.cos(p.lat) * Math.sin(rl) * r;
           const py = cy - Math.sin(p.lat) * r;
           if (first) {
@@ -198,12 +197,12 @@ export function Hero() {
             first = false;
           } else ctx!.lineTo(px, py);
         }
-        if (!allBehind) {
+        if (visible) {
           ctx!.closePath();
-          ctx!.fillStyle = `${globeColor}0.18)`;
+          ctx!.fillStyle = `${globeColor}0.15)`;
           ctx!.fill();
-          ctx!.strokeStyle = `${globeColor}0.3)`;
-          ctx!.lineWidth = 0.8;
+          ctx!.strokeStyle = `${globeColor}0.25)`;
+          ctx!.lineWidth = 0.6;
           ctx!.stroke();
         }
       }

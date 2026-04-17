@@ -292,33 +292,44 @@
       "colleges": "Colleges & departments",
       "duplicates": "Duplicate publications"
     },
+    "dashboard": {
+      "title": "Admin Dashboard"
+    },
     "admins": {
       "title": "Admins",
       "email": "Email",
       "role": "Role",
-      "add": "Add admin",
-      "add_email_placeholder": "user@uoturath.edu.iq",
+      "createdAt": "Created at",
+      "actions": "Actions",
+      "addPlaceholder": "user@uoturath.edu.iq",
+      "addButton": "Add admin",
       "remove": "Remove",
-      "cannot_remove_self": "Cannot remove yourself.",
-      "added": "Admin added.",
-      "removed": "Admin removed.",
-      "error": "Operation failed: {detail}"
+      "confirmRemove": "Are you sure you want to remove this admin?",
+      "noAdmins": "No admins found.",
+      "success": "Done.",
+      "error": "Operation failed."
     },
     "visibility": {
       "title": "Researcher visibility",
       "name": "Name",
       "username": "Username",
-      "is_public": "Public",
+      "status": "Status",
+      "public": "Public",
+      "private": "Private",
       "override": "Override",
-      "none": "—",
-      "force_show": "Force show",
-      "force_hide": "Force hide",
-      "saved": "Updated."
+      "optionNone": "— Default",
+      "optionForceShow": "Force show",
+      "optionForceHide": "Force hide",
+      "noResearchers": "No researchers found.",
+      "success": "Updated.",
+      "error": "Update failed."
     },
     "settings": {
       "title": "Homepage settings",
-      "show_scopus_wos": "Show Scopus & WoS stats on homepage",
-      "saved": "Saved."
+      "showScopusWosStats": "Show Scopus & WoS stats on homepage",
+      "showScopusWosStatsDesc": "Toggle Scopus and Web of Science metrics on the homepage statistics block.",
+      "success": "Saved.",
+      "error": "Save failed."
     },
     "audit": {
       "title": "Audit log",
@@ -326,20 +337,27 @@
       "action": "Action",
       "entity": "Entity",
       "date": "Date",
-      "empty": "No entries yet."
+      "noLogs": "No entries yet."
     },
     "colleges": {
       "title": "Colleges & departments",
-      "college": "College",
-      "department": "Department",
-      "name_en": "Name (English)",
-      "name_ar": "Name (Arabic)",
+      "addCollege": "Add college",
+      "editCollege": "Edit college",
+      "deleteCollege": "Delete college",
+      "noColleges": "No colleges yet.",
+      "departments": "Departments",
+      "addDepartment": "Add department",
+      "editDepartment": "Edit department",
+      "deleteDepartment": "Delete department",
+      "noDepartments": "No departments yet.",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
       "slug": "Slug",
-      "add": "Add",
-      "edit": "Edit",
-      "delete": "Delete",
-      "saved": "Saved.",
-      "deleted": "Deleted."
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirmDelete": "Are you sure you want to delete this?",
+      "success": "Saved.",
+      "error": "Operation failed."
     }
   },
   "analytics": {

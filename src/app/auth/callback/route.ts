@@ -1,9 +1,3 @@
-// Task 39 — OAuth callback route.
-//
-// Lives outside [locale] because Supabase redirects here with a fixed URL
-// (configured in the OAuth provider). The matcher in src/proxy.ts excludes
-// /auth/* so this handler runs without the locale middleware adding a prefix.
-
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { routing } from '@/i18n/routing';
@@ -15,7 +9,9 @@ export async function GET(request: Request) {
   const code = url.searchParams.get('code');
   const requestedNext = url.searchParams.get('next');
 
-  // Default + allow-list the next param to prevent open-redirect.
+  // Use NEXT_PUBLIC_SITE_URL instead of url.origin — inside Docker, origin is 0.0.0.0
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || url.origin;
+
   const next =
     requestedNext && SAFE_NEXT.test(requestedNext)
       ? requestedNext
@@ -23,7 +19,7 @@ export async function GET(request: Request) {
 
   if (!code) {
     return NextResponse.redirect(
-      new URL(`/${routing.defaultLocale}/sign-in?error=missing_code`, url.origin),
+      new URL(`/${routing.defaultLocale}/sign-in?error=missing_code`, origin),
     );
   }
 
@@ -32,9 +28,9 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/${routing.defaultLocale}/sign-in?error=exchange_failed`, url.origin),
+      new URL(`/${routing.defaultLocale}/sign-in?error=exchange_failed`, origin),
     );
   }
 
-  return NextResponse.redirect(new URL(next, url.origin));
+  return NextResponse.redirect(new URL(next, origin));
 }

@@ -101,6 +101,11 @@ export async function InstitutionStats({ locale }: Props) {
                   );
                 })}
             </div>
+            <p className="mt-4 text-center text-xs italic text-muted-foreground">
+              {isAr
+                ? '✦ نركّز على جودة البحث وأثره العلمي أكثر من الكمّ — الأبحاث عالية الاقتباس أولوية'
+                : '✦ We prioritize research quality and impact over volume — highly cited research is our focus'}
+            </p>
           </div>
         ) : null}
       </div>

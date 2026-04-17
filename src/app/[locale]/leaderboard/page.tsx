@@ -34,12 +34,19 @@ async function fetchTopAuthors(sortBy: string) {
         ? 'cited_by_count:desc'
         : 'summary_stats.h_index:desc';
   const res = await fetch(
-    `https://api.openalex.org/authors?filter=last_known_institutions.id:${OPENALEX_INSTITUTION_ID}&per_page=50&sort=${sort}&select=display_name,works_count,cited_by_count,summary_stats,last_known_institutions,ids`,
+    `https://api.openalex.org/authors?filter=last_known_institutions.id:${OPENALEX_INSTITUTION_ID}&per_page=200&sort=${sort}&select=display_name,works_count,cited_by_count,summary_stats,last_known_institutions,ids`,
     { next: { revalidate: 300 } },
   );
   if (!res.ok) return [];
   const d = await res.json();
-  return (d.results ?? []) as OpenAlexAuthor[];
+  const all = (d.results ?? []) as OpenAlexAuthor[];
+  return all
+    .filter((a) => {
+      const insts = a.last_known_institutions ?? [];
+      if (insts.length === 0) return false;
+      return insts[0]?.display_name?.includes('Al-Turath') ?? false;
+    })
+    .slice(0, 50);
 }
 
 export default async function LeaderboardPage({ params, searchParams }: Props) {

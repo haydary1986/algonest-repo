@@ -1,7 +1,9 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Users, Eye, Settings, ScrollText, Building2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Users, Eye, Settings, ScrollText, Building2, Download } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
+import NextLink from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +45,30 @@ export default async function AdminDashboardPage({ params }: Props) {
           </Link>
         ))}
       </div>
+      {/* Export */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-sm">
+            {locale === 'ar' ? 'تصدير البيانات' : 'Export Data'}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <NextLink
+            href="/api/export/researchers"
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
+          >
+            <Download className="size-4" />
+            {locale === 'ar' ? 'تصدير الباحثين (CSV)' : 'Export Researchers (CSV)'}
+          </NextLink>
+          <NextLink
+            href="/api/export/publications"
+            className={buttonVariants({ variant: 'outline', size: 'sm' })}
+          >
+            <Download className="size-4" />
+            {locale === 'ar' ? 'تصدير المنشورات (CSV)' : 'Export Publications (CSV)'}
+          </NextLink>
+        </CardContent>
+      </Card>
     </div>
   );
 }

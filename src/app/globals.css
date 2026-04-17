@@ -2,6 +2,73 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
+/* Hero animations */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float-icon {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+@keyframes particle-rise {
+  0% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+.animate-gradient-shift {
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* Hero entrance animations — triggered by adding .hero-mounted to section */
+.hero-fade-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+}
+
+.hero-mounted .hero-fade-up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hero-float-icon {
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero-mounted .hero-float-icon {
+  opacity: 0.12;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

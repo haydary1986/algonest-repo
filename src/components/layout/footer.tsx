@@ -1,11 +1,34 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
+import { createClient } from '@/lib/supabase/server';
+
+interface CollegeLink {
+  slug: string;
+  name_en: string;
+  name_ar: string;
+}
+
+async function fetchColleges(): Promise<CollegeLink[]> {
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('colleges')
+      .select('slug, name_en, name_ar')
+      .order('name_en')
+      .limit(10);
+    return data ?? [];
+  } catch {
+    return [];
+  }
+}
 
 export async function Footer() {
   const tFooter = await getTranslations('footer');
   const tNav = await getTranslations('navigation');
   const tCommon = await getTranslations('common');
   const year = new Date().getFullYear();
+
+  const colleges = await fetchColleges();
 
   return (
     <footer className="bg-muted/30 mt-auto border-t">
@@ -32,6 +55,23 @@ export async function Footer() {
             </ul>
           </nav>
 
+          {colleges.length > 0 && (
+            <nav className="text-sm">
+              <p className="mb-3 text-xs font-semibold tracking-wider uppercase">
+                {tFooter('colleges')}
+              </p>
+              <ul className="text-muted-foreground space-y-2">
+                {colleges.map((c) => (
+                  <li key={c.slug}>
+                    <Link href={`/college/${c.slug}`} className="hover:text-foreground">
+                      {c.name_en}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          )}
+
           <nav className="text-sm">
             <p className="mb-3 text-xs font-semibold tracking-wider uppercase">
               {tFooter('about')}
@@ -47,14 +87,6 @@ export async function Footer() {
                   {tFooter('contact')}
                 </Link>
               </li>
-            </ul>
-          </nav>
-
-          <nav className="text-sm">
-            <p className="mb-3 text-xs font-semibold tracking-wider uppercase">
-              {tFooter('privacy')}
-            </p>
-            <ul className="text-muted-foreground space-y-2">
               <li>
                 <Link href="/privacy" className="hover:text-foreground">
                   {tFooter('privacy')}

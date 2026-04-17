@@ -97,7 +97,8 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "address": "AL-Turath University, Iraq",
-    "copyright": "© {year} AL-Turath University. All rights reserved."
+    "copyright": "© {year} AL-Turath University. All rights reserved.",
+    "colleges": "Colleges"
   },
   "auth": {
     "sign_in": {

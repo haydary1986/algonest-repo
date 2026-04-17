@@ -1,15 +1,7 @@
-// Task 86 — Manage profile root page.
-//
-// Tasks 87 (language toggle): the forms render _en + _ar fields side by side,
-// so a separate "editing language" toggle is unnecessary — both are
-// accessible at all times. The HTML page already inherits dir+lang from the
-// locale wrapper.
-
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { hasLocale } from 'next-intl';
 import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
-import { fetchProfileByUsername } from '@/lib/profile/fetch';
 import { routing, type Locale } from '@/i18n/routing';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VisibilityToggle } from '@/components/manage/visibility-toggle';
@@ -19,7 +11,19 @@ import { ResearchTab } from '@/components/manage/tabs/research-tab';
 import { ContactTab } from '@/components/manage/tabs/contact-tab';
 import { ExperienceTab } from '@/components/manage/tabs/experience-tab';
 import { PublicationsTab } from '@/components/manage/tabs/publications-tab';
-import type { AcademicTitleLookup, BilingualLookup, DepartmentLookup } from '@/lib/profile/types';
+import type {
+  AcademicTitleLookup,
+  BilingualLookup,
+  DepartmentLookup,
+  PublicationRow,
+  WorkExperienceRow,
+  CertificationRow,
+  AwardRow,
+  ProjectRow,
+  SkillRow,
+  LanguageRow,
+  SocialProfileRow,
+} from '@/lib/profile/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,21 +44,24 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
 
   const t = await getTranslations('manage');
 
-  let ownerRow: { username: string } | null = null;
-  try {
-    const res = await supabase.from('researchers_owner').select('username').maybeSingle();
-    ownerRow = res.data;
-  } catch (e) {
+  const { data: ownerFull, error: ownerErr } = await supabase
+    .from('researchers_owner')
+    .select(
+      'id, full_name_en, full_name_ar, employee_id, gender_id, birthdate, academic_title_id, profile_image, workplace_type_id, college_id, department_id, university_center_id, degree_en, degree_ar, degree_minor_en, degree_minor_ar, bio_en, bio_ar, field_of_interest_en, field_of_interest_ar, website, show_public_contact, private_email, private_phone, private_office_location, private_office_hours, private_mailing_address, public_email, public_phone, public_office_location, public_office_hours, public_mailing_address, is_public, admin_visibility_override',
+    )
+    .maybeSingle();
+
+  if (ownerErr) {
     return (
       <main className="container mx-auto px-4 py-12">
         <div className="bg-destructive/10 rounded-lg border border-destructive/30 p-6 text-center">
-          <p className="text-destructive text-sm">Error loading profile: {String(e)}</p>
+          <p className="text-destructive text-sm">Error loading profile: {ownerErr.message}</p>
         </div>
       </main>
     );
   }
 
-  if (!ownerRow?.username) {
+  if (!ownerFull) {
     return (
       <main className="container mx-auto px-4 py-12">
         <div className="bg-muted/40 rounded-lg border p-6 text-center">
@@ -64,54 +71,91 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
     );
   }
 
-  let payload: Awaited<ReturnType<typeof fetchProfileByUsername>> = null;
-  try {
-    payload = await fetchProfileByUsername(ownerRow.username);
-  } catch (e) {
-    return (
-      <main className="container mx-auto px-4 py-12">
-        <div className="bg-destructive/10 rounded-lg border border-destructive/30 p-6 text-center">
-          <p className="text-destructive text-sm">Error fetching profile: {String(e)}</p>
-        </div>
-      </main>
-    );
-  }
-  if (!payload) notFound();
+  const researcherId = ownerFull.id;
 
-  // Re-fetch the OWNER row (full columns) directly — researchers_public hides
-  // employee_id, gender_id, birthdate, public/private contact, etc.
-  const { data: ownerFull } = await supabase
-    .from('researchers_owner')
-    .select(
-      'id, full_name_en, full_name_ar, employee_id, gender_id, birthdate, academic_title_id, profile_image, workplace_type_id, college_id, department_id, university_center_id, degree_en, degree_ar, degree_minor_en, degree_minor_ar, bio_en, bio_ar, field_of_interest_en, field_of_interest_ar, website, show_public_contact, private_email, private_phone, private_office_location, private_office_hours, private_mailing_address, public_email, public_phone, public_office_location, public_office_hours, public_mailing_address, is_public, admin_visibility_override',
-    )
-    .maybeSingle();
+  const [
+    genders,
+    titlesRes,
+    wt,
+    colleges,
+    departments,
+    ucs,
+    pubTypes,
+    pubSources,
+    pubsRes,
+    workRes,
+    certsRes,
+    awardsRes,
+    projectsRes,
+    skillsRes,
+    langsRes,
+    socialsRes,
+  ] = await Promise.all([
+    supabase.from('genders').select('id, name_en, name_ar').order('name_en'),
+    supabase
+      .from('academic_titles')
+      .select('id, name_en, name_ar, rank')
+      .order('rank', { ascending: false }),
+    supabase.from('workplace_types').select('id, name_en, name_ar').order('name_en'),
+    supabase.from('colleges').select('id, name_en, name_ar').order('name_en'),
+    supabase.from('departments').select('id, name_en, name_ar, college_id').order('name_en'),
+    supabase.from('university_centers').select('id, name_en, name_ar').order('name_en'),
+    supabase.from('publication_types').select('id, name_en, name_ar').order('name_en'),
+    supabase.from('publication_sources').select('id, name').order('name'),
+    supabase
+      .from('researcher_publications')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('publication_year', { ascending: false }),
+    supabase
+      .from('researcher_work_experience')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+    supabase
+      .from('researcher_certifications')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+    supabase
+      .from('researcher_awards')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('year', { ascending: false }),
+    supabase
+      .from('researcher_projects')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+    supabase
+      .from('researcher_skills')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+    supabase
+      .from('researcher_languages')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+    supabase
+      .from('researcher_social_profiles')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
+  ]);
 
-  if (!ownerFull) notFound();
+  const publications = (pubsRes.data ?? []) as PublicationRow[];
+  const work = (workRes.data ?? []) as WorkExperienceRow[];
+  const certifications = (certsRes.data ?? []) as CertificationRow[];
+  const awards = (awardsRes.data ?? []) as AwardRow[];
+  const projects = (projectsRes.data ?? []) as ProjectRow[];
+  const skills = (skillsRes.data ?? []) as SkillRow[];
+  const languages = (langsRes.data ?? []) as LanguageRow[];
+  const socials = (socialsRes.data ?? []) as SocialProfileRow[];
 
-  // Lookups for forms
-  const [genders, titlesRes, wt, colleges, departments, ucs, pubTypes, pubSources] =
-    await Promise.all([
-      supabase.from('genders').select('id, name_en, name_ar').order('name_en'),
-      supabase
-        .from('academic_titles')
-        .select('id, name_en, name_ar, rank')
-        .order('rank', { ascending: false }),
-      supabase.from('workplace_types').select('id, name_en, name_ar').order('name_en'),
-      supabase.from('colleges').select('id, name_en, name_ar').order('name_en'),
-      supabase.from('departments').select('id, name_en, name_ar, college_id').order('name_en'),
-      supabase.from('university_centers').select('id, name_en, name_ar').order('name_en'),
-      supabase.from('publication_types').select('id, name_en, name_ar').order('name_en'),
-      supabase.from('publication_sources').select('id, name').order('name'),
-    ]);
-
-  // Skills/languages/socials — denormalize to the textual format the
-  // Research tab expects.
-  const skillsCsv = payload.skills.map((s) => s.name_en).join(', ');
-  const languagesCsv = payload.languages
-    .map((l) => `${l.language_code}:${l.proficiency}`)
-    .join(', ');
-  const socialsBlock = payload.socials.map((s) => `${s.platform}|${s.url}`).join('\n');
+  const skillsCsv = skills.map((s) => s.name_en).join(', ');
+  const languagesCsv = languages.map((l) => `${l.language_code}:${l.proficiency}`).join(', ');
+  const socialsBlock = socials.map((s) => `${s.platform}|${s.url}`).join('\n');
 
   const typedLocale = locale as Locale;
 
@@ -210,16 +254,16 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
 
         <TabsContent value="experience" className="mt-6">
           <ExperienceTab
-            work={payload.work}
-            certifications={payload.certifications}
-            awards={payload.awards}
-            projects={payload.projects}
+            work={work}
+            certifications={certifications}
+            awards={awards}
+            projects={projects}
           />
         </TabsContent>
 
         <TabsContent value="publications" className="mt-6">
           <PublicationsTab
-            publications={payload.publications}
+            publications={publications}
             publicationTypes={(pubTypes.data ?? []) as BilingualLookup[]}
             publicationSources={(pubSources.data ?? []) as { id: string; name: string }[]}
           />

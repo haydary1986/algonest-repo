@@ -422,7 +422,7 @@ function ScholarQuickImport() {
                 download
                 className="text-primary text-xs inline-flex items-center gap-1 hover:underline"
               >
-                <Download className="size-3" /> Or download Chrome extension
+                <Download className="size-3" /> Install Chrome extension
               </a>
             </div>
           </div>

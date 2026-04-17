@@ -294,7 +294,29 @@
       "integrations": "Integrations"
     },
     "dashboard": {
-      "title": "Admin Dashboard"
+      "title": "Admin Dashboard",
+      "cards": {
+        "admins": {
+          "title": "Manage Admins",
+          "description": "Add or remove system administrators."
+        },
+        "visibility": {
+          "title": "Researcher Visibility",
+          "description": "Control which profiles appear in the public directory."
+        },
+        "settings": {
+          "title": "Homepage Settings",
+          "description": "Toggle stats and features on the landing page."
+        },
+        "audit": {
+          "title": "Audit Log",
+          "description": "View a history of all system changes."
+        },
+        "colleges": {
+          "title": "Colleges & Departments",
+          "description": "Manage the organizational structure."
+        }
+      }
     },
     "admins": {
       "title": "Admins",

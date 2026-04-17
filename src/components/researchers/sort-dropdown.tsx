@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -44,7 +45,9 @@ export function SortDropdown({ current }: SortDropdownProps) {
         <span>{t(current)}</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
-        <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {SORT_KEYS.map((key) => (
           <DropdownMenuItem key={key} onClick={() => pick(key)} data-active={key === current}>

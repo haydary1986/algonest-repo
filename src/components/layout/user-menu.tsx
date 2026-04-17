@@ -5,6 +5,7 @@ import { LogIn, LogOut, User as UserIcon, Shield } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -49,7 +50,9 @@ export function UserMenu({ user, isAdmin }: UserMenuProps) {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-48">
-        <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/manage-profile" />}>
           <UserIcon className="size-4" />

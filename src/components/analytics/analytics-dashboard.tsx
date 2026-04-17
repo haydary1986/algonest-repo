@@ -7,13 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import type { BilingualLookup } from '@/lib/profile/types';
 import type { Locale } from '@/i18n/routing';
 import dynamic from 'next/dynamic';
@@ -106,7 +100,13 @@ export function AnalyticsDashboard({ summary, colleges, locale, filters }: Props
             <Label htmlFor="college_filter">{t('filters.college')}</Label>
             <Select value={col} onValueChange={(v) => setCol(v ?? ALL)}>
               <SelectTrigger id="college_filter" className="w-48">
-                <SelectValue />
+                <span className="flex flex-1 text-start">
+                  {col === ALL
+                    ? t('filters.all')
+                    : ((locale === 'ar'
+                        ? colleges.find((c) => c.id === col)?.name_ar
+                        : colleges.find((c) => c.id === col)?.name_en) ?? col)}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value={ALL}>{t('filters.all')}</SelectItem>

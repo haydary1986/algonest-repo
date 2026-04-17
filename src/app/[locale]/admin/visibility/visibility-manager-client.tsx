@@ -1,15 +1,9 @@
 'use client';
 
-import { useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { setVisibilityOverride } from '@/lib/admin/actions';
 
 interface Researcher {
@@ -86,25 +80,62 @@ export function VisibilityManagerClient({
                 </Badge>
               </td>
               <td className="px-4 py-2">
-                <Select
-                  defaultValue={r.admin_visibility_override ?? '__null__'}
-                  onValueChange={(val) => handleChange(r.id, val)}
+                <OverrideSelect
+                  researcherId={r.id}
+                  initial={r.admin_visibility_override}
+                  translations={t}
                   disabled={isPending}
-                >
-                  <SelectTrigger size="sm">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="__null__">{t.none}</SelectItem>
-                    <SelectItem value="force_show">{t.forceShow}</SelectItem>
-                    <SelectItem value="force_hide">{t.forceHide}</SelectItem>
-                  </SelectContent>
-                </Select>
+                  onSave={handleChange}
+                />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+  );
+}
+
+const OVERRIDE_LABELS: Record<
+  string,
+  keyof Pick<Translations, 'none' | 'forceShow' | 'forceHide'>
+> = {
+  __null__: 'none',
+  force_show: 'forceShow',
+  force_hide: 'forceHide',
+};
+
+function OverrideSelect({
+  researcherId,
+  initial,
+  translations: t,
+  disabled,
+  onSave,
+}: {
+  researcherId: string;
+  initial: string | null;
+  translations: Translations;
+  disabled: boolean;
+  onSave: (id: string, value: string | null) => void;
+}) {
+  const [value, setValue] = useState(initial ?? '__null__');
+
+  function handleChange(v: string | null) {
+    const next = v ?? '__null__';
+    setValue(next);
+    onSave(researcherId, v);
+  }
+
+  return (
+    <Select value={value} onValueChange={handleChange} disabled={disabled}>
+      <SelectTrigger size="sm">
+        <span className="flex flex-1 text-start">{t[OVERRIDE_LABELS[value] ?? 'none']}</span>
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="__null__">{t.none}</SelectItem>
+        <SelectItem value="force_show">{t.forceShow}</SelectItem>
+        <SelectItem value="force_hide">{t.forceHide}</SelectItem>
+      </SelectContent>
+    </Select>
   );
 }

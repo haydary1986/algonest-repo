@@ -6,13 +6,7 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { addAdmin, removeAdmin } from '@/lib/admin/actions';
 
 interface Admin {
@@ -108,7 +102,9 @@ export function ManageAdminsClient({
             }}
           >
             <SelectTrigger>
-              <SelectValue />
+              <span className="flex flex-1 text-start">
+                {ROLES.find((r) => r.value === role)?.[isAr ? 'ar' : 'en'] ?? role}
+              </span>
             </SelectTrigger>
             <SelectContent>
               {ROLES.map((r) => (
@@ -124,7 +120,13 @@ export function ManageAdminsClient({
             <label className="text-xs font-medium">{isAr ? 'الكلية' : 'College'}</label>
             <Select value={scopeId} onValueChange={(v) => setScopeId(v ?? '')}>
               <SelectTrigger>
-                <SelectValue placeholder="..." />
+                <span className="flex flex-1 text-start">
+                  {scopeId
+                    ? ((isAr
+                        ? colleges.find((c) => c.id === scopeId)?.name_ar
+                        : colleges.find((c) => c.id === scopeId)?.name_en) ?? scopeId)
+                    : '...'}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {colleges.map((c) => (
@@ -141,7 +143,13 @@ export function ManageAdminsClient({
             <label className="text-xs font-medium">{isAr ? 'القسم' : 'Department'}</label>
             <Select value={scopeId} onValueChange={(v) => setScopeId(v ?? '')}>
               <SelectTrigger>
-                <SelectValue placeholder="..." />
+                <span className="flex flex-1 text-start">
+                  {scopeId
+                    ? ((isAr
+                        ? departments.find((d) => d.id === scopeId)?.name_ar
+                        : departments.find((d) => d.id === scopeId)?.name_en) ?? scopeId)
+                    : '...'}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {departments.map((d) => (

@@ -5,13 +5,7 @@ import { ExternalLink } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import type { CoauthorRow, ProfilePayload, PublicationRow } from '@/lib/profile/types';
 
@@ -84,7 +78,7 @@ export function TabPublications({ payload }: TabPublicationsProps) {
             }}
           >
             <SelectTrigger id="pub-year">
-              <SelectValue />
+              <span className="flex flex-1 text-start">{year === ALL ? t('all') : year}</span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t('all')}</SelectItem>
@@ -107,7 +101,11 @@ export function TabPublications({ payload }: TabPublicationsProps) {
             }}
           >
             <SelectTrigger id="pub-source">
-              <SelectValue />
+              <span className="flex flex-1 text-start">
+                {source === ALL
+                  ? t('all')
+                  : (lookups.publicationSourceById.get(source)?.name ?? source)}
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t('all')}</SelectItem>
@@ -130,7 +128,14 @@ export function TabPublications({ payload }: TabPublicationsProps) {
             }}
           >
             <SelectTrigger id="pub-type">
-              <SelectValue />
+              <span className="flex flex-1 text-start">
+                {type === ALL
+                  ? t('all')
+                  : (() => {
+                      const pt = lookups.publicationTypeById.get(type);
+                      return (locale === 'ar' && pt?.name_ar) || pt?.name_en || type;
+                    })()}
+              </span>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={ALL}>{t('all')}</SelectItem>

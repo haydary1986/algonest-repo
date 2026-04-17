@@ -3,13 +3,7 @@
 import { useMemo, useTransition } from 'react';
 import { X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { useRouter } from '@/i18n/navigation';
@@ -103,7 +97,14 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           onValueChange={(v) => setParam('workplace_type', v)}
         >
           <SelectTrigger id="filter-workplace">
-            <SelectValue placeholder={t('all')} />
+            <span className="flex flex-1 text-start">
+              {filters.workplaceType
+                ? nameFor(
+                    lookups.workplaceTypes.find((w) => w.id === filters.workplaceType)!,
+                    locale,
+                  )
+                : t('all')}
+            </span>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -120,7 +121,11 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
         <Label htmlFor="filter-college">{t('college')}</Label>
         <Select value={filters.college ?? ALL_VALUE} onValueChange={setCollege}>
           <SelectTrigger id="filter-college">
-            <SelectValue placeholder={t('all')} />
+            <span className="flex flex-1 text-start">
+              {filters.college
+                ? nameFor(lookups.colleges.find((c) => c.id === filters.college)!, locale)
+                : t('all')}
+            </span>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -141,7 +146,11 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           disabled={visibleDepartments.length === 0}
         >
           <SelectTrigger id="filter-department">
-            <SelectValue placeholder={t('all')} />
+            <span className="flex flex-1 text-start">
+              {filters.department
+                ? nameFor(visibleDepartments.find((d) => d.id === filters.department)!, locale)
+                : t('all')}
+            </span>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>
@@ -161,7 +170,14 @@ export function FilterSidebar({ filters, lookups }: FilterSidebarProps) {
           onValueChange={(v) => setParam('academic_title', v)}
         >
           <SelectTrigger id="filter-title">
-            <SelectValue placeholder={t('all')} />
+            <span className="flex flex-1 text-start">
+              {filters.academicTitle
+                ? nameFor(
+                    lookups.academicTitles.find((a) => a.id === filters.academicTitle)!,
+                    locale,
+                  )
+                : t('all')}
+            </span>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value={ALL_VALUE}>{t('all')}</SelectItem>

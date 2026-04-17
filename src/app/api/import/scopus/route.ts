@@ -44,7 +44,7 @@ interface ScopusSearchResponse {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const apiKey = process.env.SCOPUS_API_KEY;
+  import { getScopusApiKey } from '@/lib/integrations/config';
   if (!apiKey) {
     return NextResponse.json({ error: 'scopus_not_configured' }, { status: 503 });
   }

@@ -30,8 +30,20 @@ export default async function ImportPage({ params }: ImportPageProps) {
 
   const t = await getTranslations('import');
 
-  const orcidConfigured = Boolean(process.env.ORCID_CLIENT_ID);
-  const scopusConfigured = Boolean(process.env.SCOPUS_API_KEY);
+  // Check config from DB (admin integrations page) OR env vars as fallback
+  let orcidConfigured = Boolean(process.env.ORCID_CLIENT_ID);
+  let scopusConfigured = Boolean(process.env.SCOPUS_API_KEY);
+  try {
+    const { data: settings } = await supabase
+      .from('app_settings')
+      .select('key, value')
+      .in('key', ['integration.orcid.client_id', 'integration.scopus.api_key']);
+    for (const s of settings ?? []) {
+      const val = typeof s.value === 'string' ? s.value.replace(/^"|"$/g, '') : '';
+      if (s.key === 'integration.orcid.client_id' && val) orcidConfigured = true;
+      if (s.key === 'integration.scopus.api_key' && val) scopusConfigured = true;
+    }
+  } catch {}
 
   return (
     <main className="container mx-auto flex flex-col gap-8 px-4 py-8">

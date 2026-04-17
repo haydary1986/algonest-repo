@@ -1,31 +1,20 @@
-// Task 104 + FIX-27 (P1) — ORCID OAuth start endpoint.
-//
-// Generates a PKCE verifier + challenge and a CSRF state, stashes both in
-// httpOnly cookies (10 min TTL, one-time use), and redirects to ORCID's
-// authorize URL. The matching callback at /api/auth/orcid/callback enforces
-// every check before exchanging the code.
-//
-// Required env vars:
-//   ORCID_CLIENT_ID
-//   ORCID_CLIENT_SECRET (used in callback, not here)
-//   NEXT_PUBLIC_SITE_URL (or it falls back to the request origin)
-
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import crypto from 'node:crypto';
+import { getOrcidClientId } from '@/lib/integrations/config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const ORCID_AUTHORIZE = 'https://orcid.org/oauth/authorize';
-const COOKIE_TTL = 600; // 10 min
+const COOKIE_TTL = 600;
 
 function base64url(buf: Buffer): string {
   return buf.toString('base64url');
 }
 
 export async function GET(request: Request): Promise<Response> {
-  const clientId = process.env.ORCID_CLIENT_ID;
+  const clientId = await getOrcidClientId();
   if (!clientId) {
     return NextResponse.json({ error: 'orcid_not_configured' }, { status: 503 });
   }

@@ -44,7 +44,7 @@ interface OpenAlexWork {
 async function fetchSdgPublications(sdgNumber: number) {
   try {
     const res = await fetch(
-      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},sustainable_development_goals.id:https://metadata.un.org/sdg/${sdgNumber}&per_page=50&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,authorships,primary_location`,
+      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},sustainable_development_goals.id:https://metadata.un.org/sdg/${sdgNumber},is_retracted:false&per_page=50&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,authorships,primary_location`,
       { next: { revalidate: 3600 } },
     );
     if (!res.ok) return { total: 0, works: [] };

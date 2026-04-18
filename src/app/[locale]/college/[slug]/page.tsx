@@ -77,7 +77,7 @@ async function fetchTopPublications(researcherNames: string[]): Promise<OpenAlex
 
   try {
     const res = await fetch(
-      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID}&per_page=10&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,type,is_oa,authorships,primary_location`,
+      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},is_retracted:false&per_page=10&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,type,is_oa,authorships,primary_location`,
       { next: { revalidate: 3600 } },
     );
     if (!res.ok) return [];

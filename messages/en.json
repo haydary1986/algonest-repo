@@ -293,6 +293,7 @@
       "admins": "Manage admins",
       "auth-logs": "Auth & security log",
       "error-log": "Error log",
+      "retracted": "Retracted papers",
       "visibility": "Researcher visibility",
       "settings": "Homepage settings",
       "audit": "Audit log",

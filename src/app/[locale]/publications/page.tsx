@@ -27,7 +27,7 @@ interface OpenAlexWork {
 }
 
 async function fetchPublications(year?: string, type?: string, page = 1) {
-  const filters = [`institutions.id:${OPENALEX_INSTITUTION_ID}`];
+  const filters = [`institutions.id:${OPENALEX_INSTITUTION_ID}`, 'is_retracted:false'];
   if (year) filters.push(`publication_year:${year}`);
   if (type) filters.push(`type:${type}`);
 
@@ -46,7 +46,7 @@ async function fetchPublications(year?: string, type?: string, page = 1) {
 
 async function fetchYearFacets() {
   const res = await fetch(
-    `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID}&group_by=publication_year`,
+    `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},is_retracted:false&group_by=publication_year`,
     { next: { revalidate: 3600 } },
   );
   if (!res.ok) return [];

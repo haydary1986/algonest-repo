@@ -40,7 +40,7 @@ export async function getInstitutionAnalytics(): Promise<InstitutionAnalytics | 
   try {
     const opts = { next: { revalidate: 3600 } };
     const base = `https://api.openalex.org`;
-    const instFilter = `institutions.id:${OPENALEX_INSTITUTION_ID}`;
+    const instFilter = `institutions.id:${OPENALEX_INSTITUTION_ID},is_retracted:false`;
 
     const [instRes, yearRes, typeRes, oaRes, authorRes, topAuthorsRes, recentRes, topicsRes] =
       await Promise.all([

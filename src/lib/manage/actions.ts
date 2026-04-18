@@ -69,7 +69,9 @@ async function updateResearcher(patch: Record<string, unknown>): Promise<ActionR
 export async function saveBasic(input: BasicInput): Promise<ActionResult> {
   const parsed = basicSchema.safeParse(input);
   if (!parsed.success) return { ok: false, fieldErrors: flatten(parsed.error) };
-  return updateResearcher(parsed.data);
+  const data = { ...parsed.data };
+  if (!data.employee_id || data.employee_id.trim() === '') data.employee_id = undefined;
+  return updateResearcher({ ...data, employee_id: data.employee_id ?? null });
 }
 
 export async function saveAcademic(input: AcademicInput): Promise<ActionResult> {

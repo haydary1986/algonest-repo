@@ -57,7 +57,7 @@ interface OpenAlexWork {
 
 async function fetchSdgWorks(page: number) {
   const res = await fetch(
-    `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},has_sdg:true&per_page=20&page=${page}&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,sustainable_development_goals,authorships,primary_location,open_access`,
+    `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},sustainable_development_goals.score:%3E0.3&per_page=20&page=${page}&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,sustainable_development_goals,authorships,primary_location,open_access`,
     { next: { revalidate: 3600 } },
   );
   if (!res.ok) return { total: 0, works: [] };

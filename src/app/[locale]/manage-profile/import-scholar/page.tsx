@@ -9,7 +9,6 @@ import { routing } from '@/i18n/routing';
 import { ScholarSection } from '@/components/import/scholar-section';
 import { OrcidSection } from '@/components/import/orcid-section';
 import { ScopusSection } from '@/components/import/scopus-section';
-import { SCHOLAR_CONSOLE_SCRIPT } from '@/lib/import/scholar-console-script';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +51,7 @@ export default async function ImportPage({ params }: ImportPageProps) {
         <p className="text-muted-foreground text-sm">{t('subtitle')}</p>
       </header>
 
-      <ScholarSection consoleScript={SCHOLAR_CONSOLE_SCRIPT} />
+      <ScholarSection />
       <OrcidSection configured={orcidConfigured} />
       <ScopusSection configured={scopusConfigured} />
     </main>

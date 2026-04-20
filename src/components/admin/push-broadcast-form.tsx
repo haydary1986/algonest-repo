@@ -45,12 +45,14 @@ export function BroadcastForm({ totalSubs }: BroadcastFormProps) {
       const json = (await res.json().catch(() => ({}))) as {
         ok?: boolean;
         error?: string;
+        detail?: string;
         recipients?: number;
         success?: number;
         failure?: number;
       };
       if (!res.ok || !json.ok) {
-        toast.error(json.error ?? t('send_failed'));
+        const message = json.detail ? `${json.error ?? 'error'}: ${json.detail}` : json.error;
+        toast.error(message ?? t('send_failed'));
         return;
       }
       toast.success(

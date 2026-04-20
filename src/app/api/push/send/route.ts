@@ -46,7 +46,17 @@ export async function POST(request: Request): Promise<Response> {
   if (!publicKey || !privateKey) {
     return NextResponse.json({ error: 'not_configured' }, { status: 503 });
   }
-  webpush.setVapidDetails(subject, publicKey, privateKey);
+  try {
+    webpush.setVapidDetails(subject, publicKey, privateKey);
+  } catch (err) {
+    return NextResponse.json(
+      {
+        error: 'invalid_vapid',
+        detail: err instanceof Error ? err.message : 'VAPID setup failed',
+      },
+      { status: 500 },
+    );
+  }
 
   let body: unknown;
   try {

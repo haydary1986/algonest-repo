@@ -82,6 +82,16 @@ export async function getVapidPrivateKey(): Promise<string> {
 }
 
 export async function getVapidSubject(): Promise<string> {
-  const raw = await getIntegrationValue('integration.push.vapid_subject');
-  return raw || process.env.VAPID_SUBJECT || 'mailto:admin@uoturath.edu.iq';
+  const raw =
+    (await getIntegrationValue('integration.push.vapid_subject')) ||
+    process.env.VAPID_SUBJECT ||
+    '';
+  // web-push requires mailto: or https:// prefix; auto-prepend so a bare
+  // email typed in admin UI doesn't tank every broadcast with a cryptic
+  // "subject is missing or invalid".
+  const trimmed = raw.trim();
+  if (!trimmed) return 'mailto:admin@uoturath.edu.iq';
+  if (trimmed.startsWith('mailto:') || trimmed.startsWith('https://')) return trimmed;
+  if (trimmed.includes('@')) return `mailto:${trimmed}`;
+  return `https://${trimmed}`;
 }

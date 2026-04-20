@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { updateSetting } from '@/lib/admin/actions';
 
 interface IntegrationsFormProps {
@@ -27,8 +28,11 @@ interface ServiceConfig {
     key: string;
     label: string;
     labelAr: string;
-    placeholder: string;
+    placeholder?: string;
     secret?: boolean;
+    type?: 'text' | 'toggle';
+    hintAr?: string;
+    hintEn?: string;
   }>;
 }
 
@@ -105,6 +109,15 @@ const SERVICES: ServiceConfig[] = [
         labelAr: 'مفتاح API',
         placeholder: 'sk-********',
         secret: true,
+      },
+      {
+        key: 'integration.deepseek.enabled',
+        label: 'Enabled',
+        labelAr: 'مفعَّل',
+        type: 'toggle',
+        hintEn:
+          'When off, the floating widget shows a "Launching soon" message instead of replying.',
+        hintAr: 'عند الإيقاف، تعرض الأيقونة العائمة "قريباً جداً الإطلاق" بدلاً من الردّ.',
       },
     ],
   },
@@ -318,7 +331,12 @@ export function IntegrationsForm({ settings, locale }: IntegrationsFormProps) {
   return (
     <div className="space-y-4">
       {SERVICES.map((service) => {
-        const configured = service.fields.every((f) => values[f.key]?.trim());
+        // "Configured" = every text/secret field has a value. Toggles aren't
+        // part of the completeness check — absence of a toggle value just
+        // means "off", not "unconfigured".
+        const configured = service.fields
+          .filter((f) => f.type !== 'toggle')
+          .every((f) => values[f.key]?.trim());
         return (
           <Card key={service.id}>
             <CardHeader className="flex-row items-center gap-3">
@@ -341,37 +359,64 @@ export function IntegrationsForm({ settings, locale }: IntegrationsFormProps) {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
-              {service.fields.map((field) => (
-                <div key={field.key} className="space-y-1.5">
-                  <Label htmlFor={field.key} className="text-xs">
-                    {isAr ? field.labelAr : field.label}
-                  </Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id={field.key}
-                      type={field.secret && !showSecret[field.key] ? 'password' : 'text'}
-                      value={values[field.key] ?? ''}
-                      onChange={(e) => updateValue(field.key, e.target.value)}
-                      placeholder={field.placeholder}
-                      className="font-mono text-xs"
-                    />
-                    {field.secret ? (
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => toggleSecret(field.key)}
-                      >
-                        {showSecret[field.key] ? (
-                          <EyeOff className="size-4" />
-                        ) : (
-                          <Eye className="size-4" />
-                        )}
-                      </Button>
-                    ) : null}
+              {service.fields.map((field) => {
+                if (field.type === 'toggle') {
+                  const enabled = values[field.key] === 'true';
+                  return (
+                    <div
+                      key={field.key}
+                      className="bg-muted/40 flex items-center justify-between rounded-md border p-3"
+                    >
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <Label htmlFor={field.key} className="text-sm font-medium">
+                          {isAr ? field.labelAr : field.label}
+                        </Label>
+                        {(isAr ? field.hintAr : field.hintEn) ? (
+                          <p className="text-muted-foreground text-xs">
+                            {isAr ? field.hintAr : field.hintEn}
+                          </p>
+                        ) : null}
+                      </div>
+                      <Switch
+                        id={field.key}
+                        checked={enabled}
+                        onCheckedChange={(v) => updateValue(field.key, v ? 'true' : 'false')}
+                      />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={field.key} className="space-y-1.5">
+                    <Label htmlFor={field.key} className="text-xs">
+                      {isAr ? field.labelAr : field.label}
+                    </Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id={field.key}
+                        type={field.secret && !showSecret[field.key] ? 'password' : 'text'}
+                        value={values[field.key] ?? ''}
+                        onChange={(e) => updateValue(field.key, e.target.value)}
+                        placeholder={field.placeholder}
+                        className="font-mono text-xs"
+                      />
+                      {field.secret ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => toggleSecret(field.key)}
+                        >
+                          {showSecret[field.key] ? (
+                            <EyeOff className="size-4" />
+                          ) : (
+                            <Eye className="size-4" />
+                          )}
+                        </Button>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               <div className="flex items-center justify-between pt-2">
                 {service.link ? (
                   <a

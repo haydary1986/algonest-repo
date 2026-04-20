@@ -45,3 +45,11 @@ export async function getDeepseekApiKey(): Promise<string> {
     process.env.DEEPSEEK_API_KEY || (await getIntegrationValue('integration.deepseek.api_key'))
   );
 }
+
+// Admin toggle from /admin/integrations. Default is disabled until the
+// admin explicitly flips the switch on, so just dropping a key doesn't
+// expose the assistant while it's still being verified.
+export async function isDeepseekEnabled(): Promise<boolean> {
+  const raw = await getIntegrationValue('integration.deepseek.enabled');
+  return raw.toLowerCase() === 'true';
+}

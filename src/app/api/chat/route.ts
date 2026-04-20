@@ -12,7 +12,7 @@
 
 import { z } from 'zod';
 import { createClient } from '@/lib/supabase/server';
-import { getDeepseekApiKey } from '@/lib/integrations/config';
+import { getDeepseekApiKey, isDeepseekEnabled } from '@/lib/integrations/config';
 import { getSystemPrompt } from '@/lib/chat/context';
 import { checkChatRateLimit, getClientKey } from '@/lib/chat/rate-limit';
 
@@ -45,8 +45,8 @@ function sseError(code: string, status = 400): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const apiKey = await getDeepseekApiKey();
-  if (!apiKey) return sseError('not_configured', 503);
+  const [apiKey, enabled] = await Promise.all([getDeepseekApiKey(), isDeepseekEnabled()]);
+  if (!apiKey || !enabled) return sseError('not_configured', 503);
 
   let body: unknown;
   try {
@@ -163,8 +163,10 @@ export async function POST(request: Request): Promise<Response> {
   });
 }
 
-// Lightweight config probe — the widget uses this to decide whether to render.
+// Lightweight config probe — the widget uses this to decide whether to
+// render the chat UI (true) or the "coming soon" teaser (false). Both a
+// configured key AND the admin toggle must be on.
 export async function GET(): Promise<Response> {
-  const apiKey = await getDeepseekApiKey();
-  return Response.json({ available: Boolean(apiKey) });
+  const [apiKey, enabled] = await Promise.all([getDeepseekApiKey(), isDeepseekEnabled()]);
+  return Response.json({ available: Boolean(apiKey) && enabled });
 }

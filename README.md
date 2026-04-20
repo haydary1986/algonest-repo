@@ -16,7 +16,7 @@
   <img alt="Supabase" src="https://img.shields.io/badge/Supabase-self--hosted-3ecf8e?logo=supabase" />
   <img alt="Tailwind" src="https://img.shields.io/badge/Tailwind-v4-06b6d4?logo=tailwindcss" />
   <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-16-336791?logo=postgresql" />
-  <img alt="License" src="https://img.shields.io/badge/License-MIT-green" />
+  <img alt="License" src="https://img.shields.io/badge/License-Proprietary-red" />
 </p>
 
 <p align="center">
@@ -26,6 +26,27 @@
   <a href="docs/SETUP-REQUIREMENTS.md">Setup Guide</a> · 
   <a href="docs/ARCHITECTURE.md">Architecture</a>
 </p>
+
+---
+
+> ## ⚠️ Ownership & Legal Notice — تنبيه ملكية
+>
+> © 2026 **Haydar Abdulameer Yousif AL-IESSA** — AL-Turath University.  
+> **All Rights Reserved.** This source code is published **for viewing only**.
+>
+> - Cloning, forking, deploying, or re-hosting this software — in whole or in
+>   part — **requires written permission** from the copyright holder.
+> - Using the design, architecture, database schema, or visual identity of
+>   this project in another product is **strictly prohibited**.
+> - The official production instance runs at
+>   [**ris.uoturath.edu.iq**](https://ris.uoturath.edu.iq). Any other
+>   deployment claiming to be or to derive from this software without
+>   permission is unauthorized.
+> - See the full [LICENSE](LICENSE) for terms, including enforcement under
+>   Iraqi Law No. 65 of 2012 and the WIPO Copyright Treaty.
+>
+> **Original author:** [@haydary1986](https://github.com/haydary1986) ·
+> **First commit:** March 2026 · **Institution:** AL-Turath University.
 
 ---
 
@@ -333,7 +354,10 @@ See [SECURITY.md](SECURITY.md) for vulnerability reporting.
 
 ## License
 
-[MIT](LICENSE)
+**Proprietary — All Rights Reserved.** See [LICENSE](LICENSE).
+
+Viewing is permitted; cloning, deploying, or reusing any part of this
+software requires written permission from the copyright holder.
 
 ---
 

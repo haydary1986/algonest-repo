@@ -46,15 +46,18 @@ export async function addAdmin(
   const adminUserId = await requireSuperAdmin();
   if (!adminUserId) return { ok: false, error: 'forbidden — super_admin required' };
 
-  // Find user by email in auth.users
+  // Find user by email + do the write via the admin (service role) client.
+  // The super_admin check above has already gated the operation, so going
+  // through RLS again with a plain authenticated client just fights the
+  // GRANT on public.admins (SELECT-only for authenticated) and fails with
+  // "permission denied for table admins".
   try {
     const adminClient = createAdminClient();
     const { data } = await adminClient.auth.admin.listUsers();
     const target = data?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
     if (!target) return { ok: false, error: 'user_not_found — they must sign in first' };
 
-    const supabase = await createClient();
-    const { error } = await supabase.from('admins').insert({
+    const { error } = await adminClient.from('admins').insert({
       user_id: target.id,
       role,
       scope_id: role === 'super_admin' ? null : scopeId || null,
@@ -71,8 +74,8 @@ export async function addAdmin(
 
 export async function removeAdmin(id: string): Promise<ActionResult> {
   if (!(await requireSuperAdmin())) return { ok: false, error: 'forbidden' };
-  const supabase = await createClient();
-  const { error } = await supabase.from('admins').delete().eq('id', id);
+  const adminClient = createAdminClient();
+  const { error } = await adminClient.from('admins').delete().eq('id', id);
   if (error) return { ok: false, error: error.message };
   revalidatePath('/[locale]/admin', 'layout');
   return { ok: true };

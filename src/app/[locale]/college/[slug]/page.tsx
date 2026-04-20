@@ -72,6 +72,23 @@ async function fetchResearchers(collegeId: string): Promise<ResearcherRow[]> {
   return data ?? [];
 }
 
+interface DeptRow {
+  id: string;
+  slug: string;
+  name_en: string;
+  name_ar: string;
+}
+
+async function fetchDepartments(collegeId: string): Promise<DeptRow[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('departments')
+    .select('id, slug, name_en, name_ar')
+    .eq('college_id', collegeId)
+    .order('name_en', { ascending: true });
+  return (data as DeptRow[] | null) ?? [];
+}
+
 async function fetchTopPublications(researcherNames: string[]): Promise<OpenAlexWork[]> {
   if (researcherNames.length === 0) return [];
 
@@ -137,8 +154,12 @@ export default async function CollegePage({ params }: CollegePageProps) {
   const collegeName = isAr ? college.name_ar : college.name_en;
 
   let researchers: ResearcherRow[] = [];
+  let departments: DeptRow[] = [];
   try {
-    researchers = await fetchResearchers(college.id);
+    [researchers, departments] = await Promise.all([
+      fetchResearchers(college.id),
+      fetchDepartments(college.id),
+    ]);
   } catch {
     // Supabase unreachable -- render empty state.
   }
@@ -208,6 +229,26 @@ export default async function CollegePage({ params }: CollegePageProps) {
           );
         })}
       </div>
+
+      {/* Departments */}
+      {departments.length > 0 ? (
+        <section>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider">
+            {isAr ? 'الأقسام' : 'Departments'}
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {departments.map((d) => (
+              <Link
+                key={d.slug}
+                href={`/department/${d.slug}`}
+                className="hover:bg-accent hover:border-primary/40 inline-flex items-center rounded-full border px-3 py-1 text-xs transition-colors"
+              >
+                {isAr ? d.name_ar || d.name_en : d.name_en || d.name_ar}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       {/* Researchers grid */}
       <section>

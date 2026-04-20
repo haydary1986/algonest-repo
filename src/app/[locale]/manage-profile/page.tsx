@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/server';
 import { routing, type Locale } from '@/i18n/routing';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VisibilityToggle } from '@/components/manage/visibility-toggle';
+import { ProfileCompleteness } from '@/components/manage/profile-completeness';
+import { computeCompleteness } from '@/lib/profile/completeness';
 import { BasicTab } from '@/components/manage/tabs/basic-tab';
 import { AcademicTab } from '@/components/manage/tabs/academic-tab';
 import { ResearchTab } from '@/components/manage/tabs/research-tab';
@@ -160,11 +162,53 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
 
   const typedLocale = locale as Locale;
 
+  const completeness = computeCompleteness(
+    {
+      full_name_en: ownerFull.full_name_en,
+      full_name_ar: ownerFull.full_name_ar,
+      gender_id: ownerFull.gender_id,
+      academic_title_id: ownerFull.academic_title_id,
+      profile_image: ownerFull.profile_image,
+      birthdate: ownerFull.birthdate,
+      workplace_type_id: ownerFull.workplace_type_id,
+      college_id: ownerFull.college_id,
+      department_id: ownerFull.department_id,
+      degree_en: ownerFull.degree_en,
+      degree_ar: ownerFull.degree_ar,
+      bio_en: ownerFull.bio_en,
+      bio_ar: ownerFull.bio_ar,
+      field_of_interest_en: ownerFull.field_of_interest_en,
+      field_of_interest_ar: ownerFull.field_of_interest_ar,
+      website: ownerFull.website,
+      public_email: ownerFull.public_email,
+      public_phone: ownerFull.public_phone,
+      private_email: ownerFull.private_email,
+      private_phone: ownerFull.private_phone,
+    },
+    {
+      publications: publications.length,
+      work: work.length,
+      certifications: certifications.length,
+      awards: awards.length,
+      projects: projects.length,
+      skills: skills.length,
+      languages: languages.length,
+      socials: socials.length,
+    },
+  );
+
   return (
-    <main className="container mx-auto flex flex-col gap-8 px-4 py-8">
+    <main className="container mx-auto flex flex-col gap-6 px-4 py-8">
       <header className="flex items-start justify-between gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
       </header>
+
+      <ProfileCompleteness
+        result={completeness}
+        titleLabel={t('completeness.title')}
+        tipLabel={t('completeness.tip')}
+        openDetailsLabel={t('completeness.open_details')}
+      />
 
       <VisibilityToggle
         initial={Boolean(ownerFull.is_public)}

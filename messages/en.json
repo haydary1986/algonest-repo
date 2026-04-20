@@ -227,6 +227,11 @@
   },
   "manage": {
     "title": "Manage profile",
+    "completeness": {
+      "title": "Profile completeness",
+      "tip": "A fuller profile ranks higher and gets recommended more often by the AI assistant.",
+      "open_details": "See what to fill next"
+    },
     "edit_lang": "Editing language",
     "save": "Save changes",
     "saved": "Saved",

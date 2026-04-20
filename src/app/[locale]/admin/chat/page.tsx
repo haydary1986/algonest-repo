@@ -22,6 +22,8 @@ interface Row {
   last_message_at: string | null;
   ip_address: string | null;
   created_at: string;
+  visitor_name: string | null;
+  visitor_contact: string | null;
 }
 
 interface Msg {
@@ -51,7 +53,7 @@ export default async function AdminChatPage({ params, searchParams }: AdminChatP
   const { data: conversations } = await adminClient
     .from('chat_conversations')
     .select(
-      'id, user_id, session_id, locale, title, message_count, last_message_at, ip_address, created_at',
+      'id, user_id, session_id, locale, title, message_count, last_message_at, ip_address, created_at, visitor_name, visitor_contact',
     )
     .order('updated_at', { ascending: false })
     .limit(100);
@@ -104,7 +106,9 @@ export default async function AdminChatPage({ params, searchParams }: AdminChatP
                 {rows.map((r) => {
                   const who = r.user_id
                     ? (userEmailById.get(r.user_id) ?? t('user'))
-                    : t('anonymous');
+                    : r.visitor_name
+                      ? `${r.visitor_name}${r.visitor_contact ? ` · ${r.visitor_contact}` : ''}`
+                      : t('anonymous');
                   const isActive = r.id === active?.id;
                   return (
                     <li key={r.id} className="border-b last:border-b-0">
@@ -146,6 +150,13 @@ export default async function AdminChatPage({ params, searchParams }: AdminChatP
             <CardTitle className="text-sm">
               {active ? active.title || t('untitled') : t('pick_conversation')}
             </CardTitle>
+            {active && (active.visitor_name || active.visitor_contact) ? (
+              <p className="text-muted-foreground text-xs">
+                {active.visitor_name}
+                {active.visitor_name && active.visitor_contact ? ' · ' : ''}
+                {active.visitor_contact}
+              </p>
+            ) : null}
           </CardHeader>
           <CardContent className="max-h-[70vh] space-y-3 overflow-y-auto">
             {!active ? (

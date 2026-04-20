@@ -38,6 +38,8 @@ const inputSchema = z.object({
   message: z.string().min(1).max(2000),
   conversationId: z.string().uuid().nullable().optional(),
   sessionId: z.string().min(1).max(128).nullable().optional(),
+  visitorName: z.string().trim().min(1).max(120).nullable().optional(),
+  visitorContact: z.string().trim().min(3).max(200).nullable().optional(),
 });
 
 function sseError(code: string, status = 400): Response {
@@ -75,6 +77,15 @@ export async function POST(request: Request): Promise<Response> {
   // their user_id serves the same purpose.
   if (!userId && !parsed.data.sessionId) {
     return sseError('session_required', 400);
+  }
+
+  // Lead capture: anonymous visitors must have supplied a name + contact
+  // before (or with) their first message. If no conversationId yet AND no
+  // visitor info, reject so the widget prompts for it.
+  if (!userId && !parsed.data.conversationId) {
+    if (!parsed.data.visitorName || !parsed.data.visitorContact) {
+      return sseError('visitor_required', 400);
+    }
   }
 
   const rateKey = getClientKey(request, userId);
@@ -198,6 +209,8 @@ export async function POST(request: Request): Promise<Response> {
                 assistantMessage: assistantText,
                 ip,
                 userAgent,
+                visitorName: parsed.data.visitorName ?? null,
+                visitorContact: parsed.data.visitorContact ?? null,
               }).then((newId) => {
                 if (!conversationId && newId) {
                   conversationId = newId;
@@ -236,6 +249,8 @@ export async function POST(request: Request): Promise<Response> {
             assistantMessage: assistantText,
             ip,
             userAgent,
+            visitorName: parsed.data.visitorName ?? null,
+            visitorContact: parsed.data.visitorContact ?? null,
           });
         }
         controller.enqueue(encoder.encode(`event: done\ndata: {}\n\n`));
@@ -267,6 +282,8 @@ interface PersistParams {
   assistantMessage: string;
   ip: string | null;
   userAgent: string | null;
+  visitorName: string | null;
+  visitorContact: string | null;
 }
 
 async function persistTurn(p: PersistParams): Promise<string | null> {
@@ -297,6 +314,8 @@ async function persistTurn(p: PersistParams): Promise<string | null> {
         p_assistant_message: p.assistantMessage,
         p_ip: p.ip,
         p_user_agent: p.userAgent,
+        p_visitor_name: p.visitorName,
+        p_visitor_contact: p.visitorContact,
       });
       if (error) {
         console.error('[chat] persist anon turn failed', error.message);

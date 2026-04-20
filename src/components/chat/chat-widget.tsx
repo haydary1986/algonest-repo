@@ -54,21 +54,83 @@ export function ChatWidget() {
   const [input, setInput] = useState('');
   const [streaming, setStreaming] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  // Lead capture: required from anon visitors before their first message.
+  // Persisted in localStorage so returning visitors aren't asked twice.
+  const [visitorName, setVisitorName] = useState('');
+  const [visitorContact, setVisitorContact] = useState('');
+  const [leadCaptured, setLeadCaptured] = useState<boolean | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   // Probe backend config + current auth state in parallel. Logged-in users
   // get a dedicated /chat page via the user menu, so the floating bubble
-  // only renders for anonymous visitors.
+  // only renders for anonymous visitors. We also re-probe whenever the tab
+  // regains visibility, so an admin toggling the assistant on or off is
+  // reflected without requiring a reload.
   useEffect(() => {
-    fetch('/api/chat', { method: 'GET', cache: 'no-store' })
-      .then((r) => r.json())
-      .then((j: { available?: boolean }) => setAvailable(Boolean(j.available)))
-      .catch(() => setAvailable(false));
+    let cancelled = false;
+    const probe = () =>
+      fetch('/api/chat', { method: 'GET', cache: 'no-store' })
+        .then((r) => r.json())
+        .then((j: { available?: boolean }) => {
+          if (!cancelled) setAvailable(Boolean(j.available));
+        })
+        .catch(() => {
+          if (!cancelled) setAvailable(false);
+        });
+
+    probe();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void probe();
+    };
+    document.addEventListener('visibilitychange', onVisible);
 
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => setAuthed(Boolean(data.user)));
+    supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setAuthed(Boolean(data.user));
+    });
+
+    // Restore previously-captured lead so returning visitors skip the
+    // form. Deferred so the browser paints the icon first and the lint
+    // rule against sync setState-in-effect is satisfied.
+    const timer = setTimeout(() => {
+      if (cancelled) return;
+      try {
+        const saved = window.localStorage.getItem('ris.chat.visitor');
+        if (saved) {
+          const parsed = JSON.parse(saved) as { name?: string; contact?: string };
+          if (parsed.name && parsed.contact) {
+            setVisitorName(parsed.name);
+            setVisitorContact(parsed.contact);
+            setLeadCaptured(true);
+            return;
+          }
+        }
+        setLeadCaptured(false);
+      } catch {
+        setLeadCaptured(false);
+      }
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+    };
   }, []);
+
+  function submitLead(e: React.FormEvent) {
+    e.preventDefault();
+    const name = visitorName.trim();
+    const contact = visitorContact.trim();
+    if (!name || contact.length < 3) return;
+    try {
+      window.localStorage.setItem('ris.chat.visitor', JSON.stringify({ name, contact }));
+    } catch {
+      /* storage may be disabled; still allow the session */
+    }
+    setLeadCaptured(true);
+  }
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -98,15 +160,28 @@ export function ChatWidget() {
           message: prompt,
           conversationId,
           sessionId: getSessionId(),
+          visitorName: visitorName.trim() || undefined,
+          visitorContact: visitorContact.trim() || undefined,
         }),
         signal: abort.signal,
       });
 
       if (!res.ok || !res.body) {
         const json = (await res.json().catch(() => ({}))) as { error?: string };
-        if (json.error === 'rate_limited') toast.error(t('errors.rate_limited'));
-        else if (json.error === 'not_configured') toast.error(t('errors.not_configured'));
-        else toast.error(t('errors.generic'));
+        if (json.error === 'rate_limited') {
+          toast.error(t('errors.rate_limited'));
+        } else if (json.error === 'not_configured') {
+          // Admin turned the assistant off mid-session. Flip straight into
+          // the coming-soon panel so the user isn't left confused.
+          toast.error(t('errors.not_configured'));
+          setAvailable(false);
+          setOpen(true);
+        } else if (json.error === 'visitor_required') {
+          // Visitor cleared their lead info from storage mid-session.
+          setLeadCaptured(false);
+        } else {
+          toast.error(t('errors.generic'));
+        }
         setMessages((m) => m.filter((msg) => msg.id !== assistantMsg.id));
         return;
       }
@@ -268,74 +343,119 @@ export function ChatWidget() {
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3 text-sm">
-            {messages.length === 0 ? (
-              <div className="text-muted-foreground space-y-2 text-center text-xs">
-                <p>{t('welcome')}</p>
-                <div className="mt-3 flex flex-col gap-1.5">
-                  {[t('examples.ai'), t('examples.pubs'), t('examples.sdg')].map((ex) => (
-                    <button
-                      key={ex}
-                      type="button"
-                      onClick={() => setInput(ex)}
-                      className="hover:bg-accent rounded-md border px-3 py-1.5 text-start text-xs"
-                    >
-                      {ex}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-            {messages.map((m) => (
-              <div
-                key={m.id}
-                className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-2xl px-3 py-2 ${
-                    m.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground'
-                  }`}
-                >
-                  {m.content ? (
-                    <div
-                      className="[&_a]:underline text-sm leading-relaxed"
-                      dangerouslySetInnerHTML={renderMarkdown(m.content)}
-                    />
-                  ) : (
-                    <Loader2 className="size-4 animate-spin opacity-60" />
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex items-end gap-2 border-t p-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder={t('placeholder')}
-              rows={1}
-              disabled={streaming}
-              className="border-input bg-background min-h-[36px] max-h-24 flex-1 resize-none rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-            <Button
-              type="button"
-              size="icon"
-              onClick={() => void send()}
-              disabled={!input.trim() || streaming}
-              aria-label={t('send')}
+          {leadCaptured === false ? (
+            <form
+              onSubmit={submitLead}
+              className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4 text-sm"
             >
-              {streaming ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <Send className="size-4" />
-              )}
-            </Button>
-          </div>
-          <p className="text-muted-foreground px-3 pb-2 text-[10px]">{t('disclaimer')}</p>
+              <div className="space-y-1">
+                <p className="font-semibold">{t('lead.heading')}</p>
+                <p className="text-muted-foreground text-xs">{t('lead.body')}</p>
+              </div>
+              <label className="space-y-1">
+                <span className="text-xs font-medium">{t('lead.name_label')}</span>
+                <input
+                  required
+                  type="text"
+                  value={visitorName}
+                  onChange={(e) => setVisitorName(e.target.value)}
+                  placeholder={t('lead.name_placeholder')}
+                  className="border-input bg-background w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </label>
+              <label className="space-y-1">
+                <span className="text-xs font-medium">{t('lead.contact_label')}</span>
+                <input
+                  required
+                  type="text"
+                  inputMode="email"
+                  value={visitorContact}
+                  onChange={(e) => setVisitorContact(e.target.value)}
+                  placeholder={t('lead.contact_placeholder')}
+                  className="border-input bg-background w-full rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </label>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={!visitorName.trim() || visitorContact.trim().length < 3}
+              >
+                {t('lead.start')}
+              </Button>
+              <p className="text-muted-foreground mt-auto text-[10px]">{t('lead.disclaimer')}</p>
+            </form>
+          ) : (
+            <>
+              <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-3 text-sm">
+                {messages.length === 0 ? (
+                  <div className="text-muted-foreground space-y-2 text-center text-xs">
+                    <p>{t('welcome')}</p>
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {[t('examples.ai'), t('examples.pubs'), t('examples.sdg')].map((ex) => (
+                        <button
+                          key={ex}
+                          type="button"
+                          onClick={() => setInput(ex)}
+                          className="hover:bg-accent rounded-md border px-3 py-1.5 text-start text-xs"
+                        >
+                          {ex}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+                {messages.map((m) => (
+                  <div
+                    key={m.id}
+                    className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-3 py-2 ${
+                        m.role === 'user'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-foreground'
+                      }`}
+                    >
+                      {m.content ? (
+                        <div
+                          className="[&_a]:underline text-sm leading-relaxed"
+                          dangerouslySetInnerHTML={renderMarkdown(m.content)}
+                        />
+                      ) : (
+                        <Loader2 className="size-4 animate-spin opacity-60" />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-end gap-2 border-t p-2">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  placeholder={t('placeholder')}
+                  rows={1}
+                  disabled={streaming}
+                  className="border-input bg-background min-h-[36px] max-h-24 flex-1 resize-none rounded-md border px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <Button
+                  type="button"
+                  size="icon"
+                  onClick={() => void send()}
+                  disabled={!input.trim() || streaming}
+                  aria-label={t('send')}
+                >
+                  {streaming ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Send className="size-4" />
+                  )}
+                </Button>
+              </div>
+              <p className="text-muted-foreground px-3 pb-2 text-[10px]">{t('disclaimer')}</p>
+            </>
+          )}
         </div>
       )}
     </>

@@ -126,6 +126,16 @@
       "untitled": "Untitled",
       "unavailable_title": "Assistant is currently offline",
       "unavailable_body": "An administrator will enable it shortly. Please check back later."
+    },
+    "lead": {
+      "heading": "Before we start — tell us a bit about you",
+      "body": "Your name and one contact (email or phone) help us follow up if useful.",
+      "name_label": "Your name",
+      "name_placeholder": "e.g. Ahmed",
+      "contact_label": "Email or phone",
+      "contact_placeholder": "you@example.com",
+      "start": "Start chat",
+      "disclaimer": "We only use this to respond to your inquiry. We do not share it."
     }
   },
   "footer": {

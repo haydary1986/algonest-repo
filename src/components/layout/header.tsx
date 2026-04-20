@@ -1,9 +1,11 @@
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from './language-switcher';
 import { UserMenu } from './user-menu';
 import { MobileNav } from './mobile-nav';
+import { CollegesMegaMenu, type CollegeWithDepts } from './colleges-mega-menu';
+import { CollegesMobileAccordion } from './colleges-mobile-accordion';
 import { createClient } from '@/lib/supabase/server';
 
 interface NavLink {
@@ -22,12 +24,14 @@ const NAV_LINKS: NavLink[] = [
 export async function Header() {
   const tNav = await getTranslations('navigation');
   const tCommon = await getTranslations('common');
+  const locale = (await getLocale()) as 'ar' | 'en';
 
   let user: { email: string | null; avatarUrl: string | null } | null = null;
   let isAdmin = false;
   let logoUrl = '';
   let logoDarkUrl = '';
   let logoText = '';
+  let colleges: CollegeWithDepts[] = [];
 
   try {
     const supabase = await createClient();
@@ -60,6 +64,35 @@ export async function Header() {
       if (row.key === 'branding.logo_dark_url' && val) logoDarkUrl = val;
       if (row.key === 'branding.logo_text' && val) logoText = val;
     }
+
+    // Colleges + their departments for the mega menu. Ordered by
+    // English name for a predictable column layout.
+    const [{ data: collegeRows }, { data: deptRows }] = await Promise.all([
+      supabase
+        .from('colleges')
+        .select('id, slug, name_en, name_ar')
+        .order('name_en', { ascending: true }),
+      supabase
+        .from('departments')
+        .select('id, college_id, slug, name_en, name_ar')
+        .order('name_en', { ascending: true }),
+    ]);
+    const deptsByCollege = new Map<string, CollegeWithDepts['departments']>();
+    for (const d of (deptRows as
+      | { college_id: string; slug: string; name_en: string; name_ar: string }[]
+      | null) ?? []) {
+      const list = deptsByCollege.get(d.college_id) ?? [];
+      list.push({ slug: d.slug, name_en: d.name_en, name_ar: d.name_ar });
+      deptsByCollege.set(d.college_id, list);
+    }
+    colleges = (
+      (collegeRows as { id: string; slug: string; name_en: string; name_ar: string }[] | null) ?? []
+    ).map((c) => ({
+      slug: c.slug,
+      name_en: c.name_en,
+      name_ar: c.name_ar,
+      departments: deptsByCollege.get(c.id) ?? [],
+    }));
   } catch {
     // Supabase not configured locally — render signed-out header.
   }
@@ -104,6 +137,15 @@ export async function Header() {
               {tNav(link.key)}
             </Link>
           ))}
+          {colleges.length > 0 ? (
+            <CollegesMegaMenu
+              label={tNav('colleges')}
+              seeAllLabel={tNav('see_all')}
+              departmentsLabel={tNav('departments')}
+              colleges={colleges}
+              locale={locale}
+            />
+          ) : null}
         </nav>
 
         <div className="flex items-center gap-1">
@@ -115,15 +157,26 @@ export async function Header() {
 
           <MobileNav
             title={tCommon('app_name')}
-            links={NAV_LINKS.map((link) => (
-              <Link
-                key={link.key}
-                href={link.href}
-                className="hover:bg-accent rounded-md px-3 py-2 text-sm font-medium"
-              >
-                {tNav(link.key)}
-              </Link>
-            ))}
+            links={
+              <>
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.key}
+                    href={link.href}
+                    className="hover:bg-accent rounded-md px-3 py-2 text-sm font-medium"
+                  >
+                    {tNav(link.key)}
+                  </Link>
+                ))}
+                {colleges.length > 0 ? (
+                  <CollegesMobileAccordion
+                    label={tNav('colleges')}
+                    colleges={colleges}
+                    locale={locale}
+                  />
+                ) : null}
+              </>
+            }
             userMenu={<UserMenu user={user} isAdmin={isAdmin} />}
           />
         </div>

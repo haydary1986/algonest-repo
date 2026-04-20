@@ -12,6 +12,7 @@ import { AcademicTab } from '@/components/manage/tabs/academic-tab';
 import { ResearchTab } from '@/components/manage/tabs/research-tab';
 import { ContactTab } from '@/components/manage/tabs/contact-tab';
 import { ExperienceTab } from '@/components/manage/tabs/experience-tab';
+import { ActivitiesTab } from '@/components/manage/tabs/activities-tab';
 import { PublicationsTab } from '@/components/manage/tabs/publications-tab';
 import type {
   AcademicTitleLookup,
@@ -22,6 +23,7 @@ import type {
   CertificationRow,
   AwardRow,
   ProjectRow,
+  ActivityRow,
   SkillRow,
   LanguageRow,
   SocialProfileRow,
@@ -93,6 +95,7 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
     skillsRes,
     langsRes,
     socialsRes,
+    activitiesRes,
   ] = await Promise.all([
     supabase.from('genders').select('id, name_en, name_ar').order('name_en'),
     supabase
@@ -145,6 +148,11 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
       .select('*')
       .eq('researcher_id', researcherId)
       .order('display_order'),
+    supabase
+      .from('researcher_activities')
+      .select('*')
+      .eq('researcher_id', researcherId)
+      .order('display_order'),
   ]);
 
   const publications = (pubsRes.data ?? []) as PublicationRow[];
@@ -155,6 +163,7 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
   const skills = (skillsRes.data ?? []) as SkillRow[];
   const languages = (langsRes.data ?? []) as LanguageRow[];
   const socials = (socialsRes.data ?? []) as SocialProfileRow[];
+  const activities = (activitiesRes.data ?? []) as ActivityRow[];
 
   const skillsCsv = skills.map((s) => s.name_en).join(', ');
   const languagesCsv = languages.map((l) => `${l.language_code}:${l.proficiency}`).join(', ');
@@ -216,12 +225,13 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
       />
 
       <Tabs defaultValue="basic" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-4 sm:grid-cols-7">
           <TabsTrigger value="basic">{t('tabs.basic')}</TabsTrigger>
           <TabsTrigger value="academic">{t('tabs.academic')}</TabsTrigger>
           <TabsTrigger value="research">{t('tabs.research')}</TabsTrigger>
           <TabsTrigger value="contact">{t('tabs.contact')}</TabsTrigger>
           <TabsTrigger value="experience">{t('tabs.experience')}</TabsTrigger>
+          <TabsTrigger value="activities">{t('tabs.activities')}</TabsTrigger>
           <TabsTrigger value="publications">{t('tabs.publications')}</TabsTrigger>
         </TabsList>
 
@@ -304,6 +314,10 @@ export default async function ManageProfilePage({ params }: ManageProfilePagePro
             awards={awards}
             projects={projects}
           />
+        </TabsContent>
+
+        <TabsContent value="activities" className="mt-6">
+          <ActivitiesTab activities={activities} />
         </TabsContent>
 
         <TabsContent value="publications" className="mt-6">

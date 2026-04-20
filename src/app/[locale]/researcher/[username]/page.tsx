@@ -130,7 +130,7 @@ export default async function ResearcherPage({ params }: ResearcherPageProps) {
             projects={<TabProjects payload={payload} locale={typedLocale} />}
             experience={<TabExperience payload={payload} locale={typedLocale} />}
             thesis={<TabThesis />}
-            activities={<TabActivities />}
+            activities={<TabActivities payload={payload} />}
           />
         </div>
         <SimilarResearchers researcherId={payload.profile.id} locale={typedLocale} />

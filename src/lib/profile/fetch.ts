@@ -8,6 +8,7 @@ import type {
   EducationRow,
   WorkExperienceRow,
   CertificationRow,
+  ActivityRow,
   AwardRow,
   ProjectRow,
   SkillRow,
@@ -46,6 +47,7 @@ async function _fetchProfileByUsername(username: string): Promise<ProfilePayload
     certsRes,
     awardsRes,
     projectsRes,
+    activitiesRes,
     skillsRes,
     langsRes,
     socialsRes,
@@ -85,6 +87,11 @@ async function _fetchProfileByUsername(username: string): Promise<ProfilePayload
       .order('year', { ascending: false }),
     supabase
       .from('researcher_projects_public')
+      .select('*')
+      .eq('researcher_id', id)
+      .order('display_order'),
+    supabase
+      .from('researcher_activities_public')
       .select('*')
       .eq('researcher_id', id)
       .order('display_order'),
@@ -143,6 +150,7 @@ async function _fetchProfileByUsername(username: string): Promise<ProfilePayload
     certifications: (certsRes.data ?? []) as CertificationRow[],
     awards: (awardsRes.data ?? []) as AwardRow[],
     projects: (projectsRes.data ?? []) as ProjectRow[],
+    activities: (activitiesRes.data ?? []) as ActivityRow[],
     skills: (skillsRes.data ?? []) as SkillRow[],
     languages: (langsRes.data ?? []) as LanguageRow[],
     socials: (socialsRes.data ?? []) as SocialProfileRow[],

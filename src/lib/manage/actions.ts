@@ -7,6 +7,7 @@ import {
   academicSchema,
   awardSchema,
   basicSchema,
+  activitySchema,
   certSchema,
   contactSchema,
   educationSchema,
@@ -24,6 +25,7 @@ import {
   type CertInput,
   type AwardInput,
   type ProjectInput,
+  type ActivityInput,
   type PublicationInput,
 } from './schemas';
 import { workSchema } from './schemas';
@@ -219,13 +221,15 @@ async function upsertChild<T extends { id?: string }>(
     | 'researcher_work_experience'
     | 'researcher_certifications'
     | 'researcher_awards'
-    | 'researcher_projects',
+    | 'researcher_projects'
+    | 'researcher_activities',
   schema:
     | typeof educationSchema
     | typeof workSchema
     | typeof certSchema
     | typeof awardSchema
-    | typeof projectSchema,
+    | typeof projectSchema
+    | typeof activitySchema,
   input: T,
 ): Promise<ActionResult> {
   const parsed = schema.safeParse(input);
@@ -262,6 +266,7 @@ async function deleteChild(
     | 'researcher_certifications'
     | 'researcher_awards'
     | 'researcher_projects'
+    | 'researcher_activities'
     | 'researcher_publications',
   id: string,
 ): Promise<ActionResult> {
@@ -312,6 +317,14 @@ export async function saveProject(input: ProjectInput): Promise<ActionResult> {
 
 export async function deleteProject(id: string): Promise<ActionResult> {
   return deleteChild('researcher_projects', id);
+}
+
+export async function saveActivity(input: ActivityInput): Promise<ActionResult> {
+  return upsertChild('researcher_activities', activitySchema, input);
+}
+
+export async function deleteActivity(id: string): Promise<ActionResult> {
+  return deleteChild('researcher_activities', id);
 }
 
 // ---------- Publications ----------

@@ -247,7 +247,27 @@
       "research": "البحث",
       "contact": "التواصل",
       "experience": "الخبرات",
+      "activities": "النشاطات",
       "publications": "المنشورات"
+    },
+    "activities": {
+      "editorial_board": "هيئة تحرير",
+      "conference": "المؤتمرات",
+      "membership": "العضويات المهنية",
+      "add": "إضافة عنصر",
+      "empty": "لا توجد عناصر بعد.",
+      "placeholder_title_en": "العنوان (إنكليزي) — اسم المجلة أو المؤتمر أو الجمعية",
+      "placeholder_title_ar": "العنوان (عربي)",
+      "placeholder_role_en": "الدور (إنكليزي) — مثلاً: محرّر، متحدّث، عضو",
+      "placeholder_role_ar": "الدور (عربي)",
+      "placeholder_org_en": "الجهة (إنكليزي)",
+      "placeholder_org_ar": "الجهة (عربي)",
+      "placeholder_location": "المكان (اختياري)",
+      "placeholder_start_year": "سنة البدء",
+      "placeholder_end_year": "سنة الانتهاء (فارغ إن كان مستمراً)",
+      "placeholder_url": "رابط (اختياري)",
+      "placeholder_desc_en": "وصف (إنكليزي، اختياري)",
+      "placeholder_desc_ar": "وصف (عربي، اختياري)"
     },
     "basic": {
       "full_name_en": "الاسم الكامل (إنكليزي)",

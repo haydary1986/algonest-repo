@@ -140,6 +140,26 @@ export interface ProjectRow {
   display_order: number;
 }
 
+export type ActivityType = 'editorial_board' | 'conference' | 'membership';
+
+export interface ActivityRow {
+  id: string;
+  type: ActivityType;
+  title_en: string;
+  title_ar: string | null;
+  role_en: string | null;
+  role_ar: string | null;
+  organization_en: string | null;
+  organization_ar: string | null;
+  location: string | null;
+  start_year: number | null;
+  end_year: number | null;
+  url: string | null;
+  description_en: string | null;
+  description_ar: string | null;
+  display_order: number;
+}
+
 export interface SkillRow {
   id: string;
   name_en: string;
@@ -217,6 +237,7 @@ export interface ProfilePayload {
   certifications: CertificationRow[];
   awards: AwardRow[];
   projects: ProjectRow[];
+  activities: ActivityRow[];
   skills: SkillRow[];
   languages: LanguageRow[];
   socials: SocialProfileRow[];

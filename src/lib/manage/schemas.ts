@@ -132,6 +132,23 @@ export const projectSchema = z.object({
   url: optionalUrl,
 });
 
+export const activitySchema = z.object({
+  id: z.string().uuid().optional(),
+  type: z.enum(['editorial_board', 'conference', 'membership']),
+  title_en: z.string().min(1).max(300),
+  title_ar: optionalString(300),
+  role_en: optionalString(200),
+  role_ar: optionalString(200),
+  organization_en: optionalString(200),
+  organization_ar: optionalString(200),
+  location: optionalString(200),
+  start_year: z.coerce.number().int().min(1900).max(2100).optional().nullable(),
+  end_year: z.coerce.number().int().min(1900).max(2100).optional().nullable(),
+  url: optionalUrl,
+  description_en: optionalString(2000),
+  description_ar: optionalString(2000),
+});
+
 export const publicationSchema = z.object({
   title: z.string().min(1).max(500),
   abstract: optionalString(5000),
@@ -157,4 +174,5 @@ export type WorkInput = z.infer<typeof workSchema>;
 export type CertInput = z.infer<typeof certSchema>;
 export type AwardInput = z.infer<typeof awardSchema>;
 export type ProjectInput = z.infer<typeof projectSchema>;
+export type ActivityInput = z.infer<typeof activitySchema>;
 export type PublicationInput = z.infer<typeof publicationSchema>;

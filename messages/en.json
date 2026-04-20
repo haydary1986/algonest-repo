@@ -247,7 +247,27 @@
       "research": "Research",
       "contact": "Contact",
       "experience": "Experience",
+      "activities": "Activities",
       "publications": "Publications"
+    },
+    "activities": {
+      "editorial_board": "Editorial board",
+      "conference": "Conferences",
+      "membership": "Professional memberships",
+      "add": "Add entry",
+      "empty": "No entries yet.",
+      "placeholder_title_en": "Title (English) — journal, conference, or organization name",
+      "placeholder_title_ar": "Title (Arabic)",
+      "placeholder_role_en": "Role (English) — e.g. Editor, Speaker, Member",
+      "placeholder_role_ar": "Role (Arabic)",
+      "placeholder_org_en": "Organization (English)",
+      "placeholder_org_ar": "Organization (Arabic)",
+      "placeholder_location": "Location (optional)",
+      "placeholder_start_year": "Start year",
+      "placeholder_end_year": "End year (blank if ongoing)",
+      "placeholder_url": "URL (optional)",
+      "placeholder_desc_en": "Description (English, optional)",
+      "placeholder_desc_ar": "Description (Arabic, optional)"
     },
     "basic": {
       "full_name_en": "Full name (English)",

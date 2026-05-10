@@ -33,18 +33,18 @@ export async function generateMetadata({
   const keywords =
     locale === 'ar'
       ? [
-          'الجامعة العراقية',
+          'عش الخوارزميات',
           'دليل الباحثين',
           'ملف أكاديمي',
           'سيرة ذاتية أكاديمية',
-          'باحثو الجامعة العراقية',
+          'باحثو عش الخوارزميات',
           'المنشورات العلمية',
           'أعضاء هيئة التدريس',
           'العراق',
           'بغداد',
         ]
       : [
-          'Al-Iraqia University',
+          'Algonest',
           'researcher directory',
           'academic profile',
           'CV generator',
@@ -69,7 +69,7 @@ export async function generateMetadata({
       title: t('title'),
       description,
       locale,
-      siteName: 'Al-Iraqia RIS',
+      siteName: 'Algonest RIS',
     },
     twitter: {
       card: 'summary_large_image',

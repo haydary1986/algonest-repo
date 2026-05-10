@@ -8,11 +8,11 @@ export function OrganizationSchema() {
     <JsonLd
       data={{
         '@context': 'https://schema.org',
-        '@type': 'CollegeOrUniversity',
-        name: 'Al-Iraqia University',
-        alternateName: 'الجامعة العراقية',
+        '@type': 'Organization',
+        name: 'Algonest',
+        alternateName: 'عش الخوارزميات',
         url,
-        sameAs: ['https://aliraqia.edu.iq', 'https://aliraqia.edu.iq'],
+        sameAs: ['https://algonest.tech'],
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'IQ',

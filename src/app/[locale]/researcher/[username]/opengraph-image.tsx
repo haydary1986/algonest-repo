@@ -57,7 +57,7 @@ export default async function OgImage({ params }: OgImageProps) {
           textTransform: 'uppercase',
         }}
       >
-        Al-Iraqia University · RIS
+        Algonest · RIS
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

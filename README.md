@@ -1,12 +1,12 @@
 <p align="center">
-  <h1 align="center">RIS — Researcher Information System</h1>
+  <h1 align="center">Algonest RIS — Demo</h1>
   <p align="center">
-    <strong>نظام معلومات الباحثين — الجامعة العراقية</strong>
+    <strong>منصة المستودع الرقمي للباحثين — عرض من شركة عش الخوارزميات</strong>
   </p>
   <p align="center">
-    منصة دليل الباحثين ثنائية اللغة (عربي/إنكليزي) مع تتبّع المنشورات، تحليلات متقدّمة، وملفات باحثين مُحسَّنة لمحرّكات البحث.
+    منصة عرض (demo) ثنائية اللغة (عربي/إنكليزي) لنظام معلومات الباحثين، نقدّمها للجامعات والمراكز البحثية لتقييم تجربة الاستخدام قبل التبنّي الفعلي.
     <br />
-    A bilingual (EN/AR) research directory platform with publication tracking, analytics, and SEO-optimized researcher profiles.
+    A bilingual (EN/AR) Researcher Information System demo by Algonest — a showcase platform that universities and research centres can preview before adoption.
   </p>
 </p>
 
@@ -31,22 +31,21 @@
 
 > ## ⚠️ Ownership & Legal Notice — تنبيه ملكية
 >
-> © 2026 **Haydar Abdulameer Yousif AL-IESSA** — Al-Iraqia University.  
+> © 2026 **Algonest (عش الخوارزميات)** — Author: Haydar Abdulameer Yousif AL-IESSA.  
 > **All Rights Reserved.** This source code is published **for viewing only**.
 >
 > - Cloning, forking, deploying, or re-hosting this software — in whole or in
->   part — **requires written permission** from the copyright holder.
+>   part — **requires written permission** from Algonest.
 > - Using the design, architecture, database schema, or visual identity of
 >   this project in another product is **strictly prohibited**.
-> - The official production instance runs at
->   [**repo.aliraqia.edu.iq**](https://repo.aliraqia.edu.iq). Any other
+> - The official demo instance runs at
+>   [**repo.algonest.tech**](https://repo.algonest.tech). Any other
 >   deployment claiming to be or to derive from this software without
 >   permission is unauthorized.
-> - See the full [LICENSE](LICENSE) for terms, including enforcement under
->   Iraqi Law No. 65 of 2012 and the WIPO Copyright Treaty.
+> - See the full [LICENSE](LICENSE) for terms.
 >
-> **Original author:** [@haydary1986](https://github.com/haydary1986) ·
-> **First commit:** March 2026 · **Institution:** Al-Iraqia University.
+> **Maintainer:** [@haydary1986](https://github.com/haydary1986) ·
+> **Owner:** Algonest · **Contact:** hello@algonest.tech
 
 ---
 
@@ -330,7 +329,7 @@ See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete gu
 6. Set environment variables in Coolify (see [.env.example](.env.example)).
    `NEXT_PUBLIC_*` values must also be added as **Build Args** so they get
    inlined into the client bundle.
-7. Point DNS (`repo.aliraqia.edu.iq` → your VPS) via Cloudflare and let
+7. Point DNS (`repo.algonest.tech` → your VPS) via Cloudflare and let
    Coolify provision the TLS cert.
 8. Open `/admin/setup` to verify all services.
 
@@ -341,11 +340,11 @@ See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete gu
 See [.env.example](.env.example) for all variables. Required:
 
 ```
-NEXT_PUBLIC_SITE_URL=https://repo.aliraqia.edu.iq
-NEXT_PUBLIC_SUPABASE_URL=https://api-repo.aliraqia.edu.iq
+NEXT_PUBLIC_SITE_URL=https://repo.algonest.tech
+NEXT_PUBLIC_SUPABASE_URL=https://api-repo.algonest.tech
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
-NEXT_PUBLIC_OPENALEX_INSTITUTION_ID=I...   # Look up Al-Iraqia on OpenAlex
+NEXT_PUBLIC_OPENALEX_INSTITUTION_ID=I...   # Look up Algonest on OpenAlex
 ```
 
 Optional: `SENTRY_DSN`, `ORCID_CLIENT_ID/SECRET`, `SCOPUS_API_KEY`, `GOOGLE_SITE_VERIFICATION`, `INDEXNOW_KEY`.
@@ -368,5 +367,5 @@ software requires written permission from the copyright holder.
 ---
 
 <p align="center">
-  Built for the Al-Iraqia University Research Community
+  Built for the Algonest Research Community
 </p>

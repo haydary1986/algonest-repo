@@ -44,7 +44,7 @@ async function fetchTopAuthors(sortBy: string) {
     .filter((a) => {
       const insts = a.last_known_institutions ?? [];
       if (insts.length === 0) return false;
-      return insts[0]?.display_name?.includes('Al-Iraqia') ?? false;
+      return insts[0]?.display_name?.includes('Algonest') ?? false;
     })
     .slice(0, 50);
 }
@@ -85,8 +85,8 @@ export default async function LeaderboardPage({ params, searchParams }: Props) {
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
           {isAr
-            ? 'ترتيب باحثي الجامعة العراقية حسب الأداء البحثي — بيانات من OpenAlex'
-            : 'Al-Iraqia University researchers ranked by research performance — Data from OpenAlex'}
+            ? 'ترتيب باحثي عش الخوارزميات حسب الأداء البحثي — بيانات من OpenAlex'
+            : 'Algonest researchers ranked by research performance — Data from OpenAlex'}
         </p>
       </header>
 

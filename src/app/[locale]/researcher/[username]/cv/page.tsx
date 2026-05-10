@@ -307,7 +307,7 @@ export default async function CvPage({ params }: CvPageProps) {
                 </div>
               )}
               <div style={{ fontSize: '10px', color: '#718096', marginTop: '2px' }}>
-                {[deptName, collegeName, isAr ? 'الجامعة العراقية' : 'Al-Iraqia University']
+                {[deptName, collegeName, isAr ? 'عش الخوارزميات' : 'Algonest']
                   .filter(Boolean)
                   .join(' • ')}
               </div>
@@ -472,9 +472,9 @@ export default async function CvPage({ params }: CvPageProps) {
             }}
           >
             {isAr
-              ? `تم إنشاء هذه السيرة الذاتية تلقائياً من نظام معلومات الباحثين — الجامعة العراقية — ${new Date().toLocaleDateString('ar-IQ')}`
-              : `Auto-generated from Researcher Information System — Al-Iraqia University — ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}
-            {' | '}repo.aliraqia.edu.iq
+              ? `تم إنشاء هذه السيرة الذاتية تلقائياً من نظام معلومات الباحثين — عش الخوارزميات — ${new Date().toLocaleDateString('ar-IQ')}`
+              : `Auto-generated from Researcher Information System — Algonest — ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}
+            {' | '}repo.algonest.tech
           </div>
         </div>
       </div>

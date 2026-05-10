@@ -1,6 +1,8 @@
 import { getIntegrationValue } from '@/lib/integrations/config';
 
-const AFFILIATION_QUERY = 'AFFILORG(Al-Iraqia OR Iraqia)';
+// Demo deployment — set this to the affiliation name of the institution
+// you're showcasing the platform to, or override via env at runtime.
+const AFFILIATION_QUERY = process.env.SCOPUS_AFFILIATION_QUERY || 'AFFILORG(Algonest)';
 
 interface ScopusStats {
   totalPublications: number;

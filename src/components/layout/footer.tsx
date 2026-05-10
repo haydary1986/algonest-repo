@@ -65,20 +65,20 @@ export async function Footer() {
                 {tFooter('address')}
               </p>
               <a
-                href="https://aliraqia.edu.iq"
+                href="https://algonest.tech"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
               >
                 <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                aliraqia.edu.iq
+                algonest.tech
               </a>
               <a
-                href="mailto:research@aliraqia.edu.iq"
+                href="mailto:research@algonest.tech"
                 className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors"
               >
                 <Mail className="size-3.5 shrink-0" aria-hidden />
-                research@aliraqia.edu.iq
+                research@algonest.tech
               </a>
             </div>
           </div>

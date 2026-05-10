@@ -16,9 +16,9 @@ COPY . .
 # the client bundle. In Coolify, set these as build-time variables on the
 # application (Build Configuration → Build Args), or rely on the defaults
 # below for first-pass deploys.
-ARG NEXT_PUBLIC_SUPABASE_URL=https://api-repo.aliraqia.edu.iq
+ARG NEXT_PUBLIC_SUPABASE_URL=https://api-repo.algonest.tech
 ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
-ARG NEXT_PUBLIC_SITE_URL=https://repo.aliraqia.edu.iq
+ARG NEXT_PUBLIC_SITE_URL=https://repo.algonest.tech
 ARG NEXT_PUBLIC_OPENALEX_INSTITUTION_ID
 ARG NEXT_PUBLIC_SENTRY_DSN
 

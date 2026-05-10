@@ -1,17 +1,11 @@
--- Task 37 + FIX-05 (P0) — Enforce institutional email at signup
+-- Algonest demo — institutional email enforcement DISABLED.
 --
--- The original task spec relied on a Supabase "before-user-created" auth
--- hook that does NOT exist. Real Supabase hooks are limited to:
---   send-email, send-sms, custom-access-token, mfa-verification-attempt,
---   password-verification-attempt.
---
--- We use a BEFORE INSERT trigger on auth.users instead. Caveat: the failure
--- surfaces to the client as HTTP 500 from the auth API; the sign-in UI
--- (task 38) translates that to a user-friendly toast.
---
--- Escape hatch: an admin can pre-seed `raw_user_meta_data->>'invited_by_admin'
--- = 'true'` on a manually-issued invite to bypass the domain check
--- (e.g., external collaborators).
+-- This platform is a demo Researcher Information System by Algonest, used
+-- by multiple universities for evaluation. Restricting signups to a single
+-- email domain doesn't fit that model, so the trigger is a no-op that
+-- accepts any email. The function and trigger remain in place (rather than
+-- being dropped) so a downstream deployment can replace the function body
+-- to re-enable domain checks without a schema migration.
 
 CREATE OR REPLACE FUNCTION public.enforce_institutional_email()
 RETURNS trigger
@@ -19,24 +13,9 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
-DECLARE
-  allowed_domains text[] := ARRAY['aliraqia.edu.iq'];
-  email_domain    text;
 BEGIN
-  -- Admin-invited accounts skip the domain check.
-  IF NEW.raw_user_meta_data->>'invited_by_admin' = 'true' THEN
-    RETURN NEW;
-  END IF;
-
-  email_domain := lower(split_part(NEW.email, '@', 2));
-
-  IF NOT (email_domain = ANY (allowed_domains)) THEN
-    RAISE EXCEPTION
-      'Email domain "%" is not allowed. Use your institutional email.',
-      email_domain
-      USING ERRCODE = '22023';
-  END IF;
-
+  -- Demo mode: allow any email domain. Replace the body with a domain
+  -- check (see git history) when deploying for a single institution.
   RETURN NEW;
 END;
 $$;

@@ -88,8 +88,8 @@ export default async function SdgPublicationsPage({ params, searchParams }: Prop
         </h1>
         <p className="text-sm text-muted-foreground">
           {isAr
-            ? `${total.toLocaleString('ar')} بحث مرتبط بأهداف التنمية المستدامة — الجامعة العراقية`
-            : `${total.toLocaleString('en')} publications linked to UN SDGs — Al-Iraqia University`}
+            ? `${total.toLocaleString('ar')} بحث مرتبط بأهداف التنمية المستدامة — عش الخوارزميات`
+            : `${total.toLocaleString('en')} publications linked to UN SDGs — Algonest`}
         </p>
       </header>
 

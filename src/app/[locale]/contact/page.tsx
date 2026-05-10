@@ -43,8 +43,8 @@ export default async function ContactPage({ params }: ContactPageProps) {
           <Mail className="text-primary mt-0.5 size-5 shrink-0" />
           <div>
             <p className="font-medium">{t('email_label')}</p>
-            <a className="text-primary text-sm underline" href="mailto:research@aliraqia.edu.iq">
-              research@aliraqia.edu.iq
+            <a className="text-primary text-sm underline" href="mailto:research@algonest.tech">
+              research@algonest.tech
             </a>
           </div>
         </li>
@@ -54,11 +54,11 @@ export default async function ContactPage({ params }: ContactPageProps) {
             <p className="font-medium">{t('web_label')}</p>
             <a
               className="text-primary text-sm underline"
-              href="https://aliraqia.edu.iq"
+              href="https://algonest.tech"
               target="_blank"
               rel="noopener"
             >
-              aliraqia.edu.iq
+              algonest.tech
             </a>
           </div>
         </li>

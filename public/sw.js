@@ -26,7 +26,7 @@ self.addEventListener('push', (event) => {
     data = { title: 'RIS', body: event.data ? event.data.text() : '' };
   }
 
-  const title = data.title || 'Al-Iraqia RIS';
+  const title = data.title || 'Algonest RIS';
   const options = {
     body: data.body || '',
     icon: data.icon || '/icon-192.png',

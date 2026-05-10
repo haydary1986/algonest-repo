@@ -3,7 +3,7 @@ import { logError } from '@/lib/logger';
 
 const OPENALEX_API = 'https://api.openalex.org';
 const INSTITUTION_ID = 'I2801460691';
-const INSTITUTION_DOMAIN = 'aliraqia.edu.iq';
+const INSTITUTION_DOMAIN = 'algonest.tech';
 
 interface OpenAlexAuthor {
   id: string;
@@ -35,7 +35,7 @@ function isAffiliated(author: OpenAlexAuthor): boolean {
   return (author.last_known_institutions ?? []).some(
     (inst) =>
       inst.id === `https://openalex.org/${INSTITUTION_ID}` ||
-      (inst.display_name ?? '').includes('Al-Iraqia'),
+      (inst.display_name ?? '').includes('Algonest'),
   );
 }
 

@@ -100,7 +100,7 @@ export async function getVapidSubject(): Promise<string> {
   // email typed in admin UI doesn't tank every broadcast with a cryptic
   // "subject is missing or invalid".
   const trimmed = raw.trim();
-  if (!trimmed) return 'mailto:admin@aliraqia.edu.iq';
+  if (!trimmed) return 'mailto:admin@algonest.tech';
   if (trimmed.startsWith('mailto:') || trimmed.startsWith('https://')) return trimmed;
   if (trimmed.includes('@')) return `mailto:${trimmed}`;
   return `https://${trimmed}`;

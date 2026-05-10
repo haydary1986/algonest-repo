@@ -308,7 +308,7 @@ export function BrandingForm({ settings, locale }: Props) {
               <span className="text-base font-semibold">{logoText}</span>
             )}
             <span className="text-muted-foreground text-sm">
-              {isAr ? 'الجامعة العراقية' : 'Al-Iraqia University'}
+              {isAr ? 'عش الخوارزميات' : 'Algonest'}
             </span>
           </div>
         </CardContent>

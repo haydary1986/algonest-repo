@@ -18,7 +18,7 @@ export function LandingSchema() {
     '@type': 'WebSite',
     '@id': `${url}/#website`,
     url,
-    name: 'Al-Iraqia University Researcher Directory',
+    name: 'Algonest Researcher Directory',
     alternateName: 'RIS — Research Information System',
     inLanguage: ['en', 'ar'],
     potentialAction: {
@@ -34,12 +34,12 @@ export function LandingSchema() {
   const softwareApplication = {
     '@type': 'SoftwareApplication',
     '@id': `${url}/#app`,
-    name: 'RIS — Al-Iraqia Researcher Information System',
+    name: 'RIS — Algonest Researcher Information System',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'Web',
     url,
     description:
-      'A researcher directory and academic profile platform for Al-Iraqia University. Every faculty member gets a public, citable academic profile with publications, citations, and a one-click CV. Bilingual (Arabic / English).',
+      'A researcher directory and academic profile platform for Algonest. Every faculty member gets a public, citable academic profile with publications, citations, and a one-click CV. Bilingual (Arabic / English).',
     featureList: [
       'Public researcher directory with college and department filters',
       'Academic profile pages with publications, citations, and SDG alignment',
@@ -61,10 +61,10 @@ export function LandingSchema() {
     mainEntity: [
       {
         '@type': 'Question',
-        name: 'What is the Al-Iraqia University Researcher Directory?',
+        name: 'What is the Algonest Researcher Directory?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'It is the official directory of researchers at Al-Iraqia University, Iraq. Each researcher has a public academic profile with their biography, research interests, publications, citations, and affiliations — searchable by college, department, research area, or SDG.',
+          text: 'It is the official directory of researchers at Algonest, Iraq. Each researcher has a public academic profile with their biography, research interests, publications, citations, and affiliations — searchable by college, department, research area, or SDG.',
         },
       },
       {
@@ -72,7 +72,7 @@ export function LandingSchema() {
         name: 'Does every researcher get an academic profile page?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. Every faculty member has a dedicated public profile at repo.aliraqia.edu.iq/{locale}/researcher/{username}. The profile serves as their citable academic identity, indexed by Google with Person and ProfilePage structured data.',
+          text: 'Yes. Every faculty member has a dedicated public profile at repo.algonest.tech/{locale}/researcher/{username}. The profile serves as their citable academic identity, indexed by Google with Person and ProfilePage structured data.',
         },
       },
       {

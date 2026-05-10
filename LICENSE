@@ -1,7 +1,7 @@
 Proprietary License — All Rights Reserved
 
-Copyright (c) 2026 Haydar Abdulameer Yousif AL-IESSA
-Al-Iraqia University, Iraq
+Copyright (c) 2026 Algonest (عش الخوارزميات)
+Author: Haydar Abdulameer Yousif AL-IESSA
 
 ---
 
@@ -35,13 +35,14 @@ only. It is NOT open-source software.
 3. NO TRANSFER OF OWNERSHIP.
    All right, title, and interest in and to this software — including
    all intellectual property rights — are and shall remain the
-   exclusive property of the copyright holder named above.
+   exclusive property of Algonest.
 
-4. INSTITUTIONAL USE.
-   Al-Iraqia University is granted a non-exclusive, royalty-free,
-   non-transferable license to deploy and operate this software as the
-   Research Information System of Al-Iraqia University, for so long as
-   it is operated at domains under Al-Iraqia University's control.
+4. DEMO USE.
+   The official demo instance is operated by Algonest at
+   https://repo.algonest.tech for evaluation by prospective university
+   customers. Universities evaluating the platform receive a limited,
+   read-only viewing license; full deployment requires a separate
+   commercial agreement with Algonest.
 
 5. NO WARRANTY.
    The software is provided "AS IS", without warranty of any kind,
@@ -56,14 +57,13 @@ only. It is NOT open-source software.
 
 7. ENFORCEMENT.
    Unauthorized use, reproduction, or distribution constitutes a
-   violation of applicable copyright law — including Iraqi Law No. 65
-   of 2012 on Intellectual Property Protection and the WIPO Copyright
+   violation of applicable copyright law — including the WIPO Copyright
    Treaty (1996) — and will be pursued to the fullest extent available,
    including GitHub DMCA takedown notices, injunctive relief, and
    monetary damages.
 
 8. CONTACT.
    For licensing inquiries, commercial use requests, or attribution
-   questions, contact the copyright holder via Al-Iraqia University.
+   questions, contact Algonest at hello@algonest.tech.
 
 END OF LICENSE

@@ -134,7 +134,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 configuring next.config.ts remotePatterns for a single
                 source, and the upstream file is already optimised webp. */}
             <img
-              src="https://aliraqia.edu.iq/wp-content/uploads/2024/10/%D8%B1%D8%A6%D9%8A%D8%B3-%D9%85%D8%AC%D9%84%D8%B3-%D8%A7%D9%84%D8%A7%D9%85%D9%86%D8%A7%D8%A1-%D8%A7%D9%84%D8%A3%D8%B3%D8%AA%D8%A7%D8%B0-%D8%B9%D9%84%D9%8A-%D8%A7%D9%84%D8%B9%D9%83%D9%8A%D9%84%D9%8A.png.webp"
+              src="https://algonest.tech/wp-content/uploads/2024/10/%D8%B1%D8%A6%D9%8A%D8%B3-%D9%85%D8%AC%D9%84%D8%B3-%D8%A7%D9%84%D8%A7%D9%85%D9%86%D8%A7%D8%A1-%D8%A7%D9%84%D8%A3%D8%B3%D8%AA%D8%A7%D8%B0-%D8%B9%D9%84%D9%8A-%D8%A7%D9%84%D8%B9%D9%83%D9%8A%D9%84%D9%8A.png.webp"
               alt={t('chairman.name')}
               loading="lazy"
               decoding="async"
@@ -256,8 +256,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
         <h2 className="text-lg font-semibold">{t('contact_title')}</h2>
         <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
           {t('contact_body')}{' '}
-          <a className="text-primary underline" href="mailto:research@aliraqia.edu.iq">
-            research@aliraqia.edu.iq
+          <a className="text-primary underline" href="mailto:research@algonest.tech">
+            research@algonest.tech
           </a>
           .
         </p>

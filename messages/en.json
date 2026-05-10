@@ -34,6 +34,8 @@
     "hero": {
       "title": "Algonest Digital Repository — Researcher Directory & Academic Profile Platform",
       "tagline": "An institutional digital repository and researcher information system (RIS): a searchable directory of researchers, citable academic profile pages, publication tracking from Scopus / ORCID / OpenAlex, and a one-click CV — bilingual (Arabic / English), SEO-optimized, free.",
+      "customization_badge": "Fully customizable",
+      "customization_note": "Design, colors, typography, and feature set are fully tailored to match your university's brand identity and workflow — your logo, your palette, your fields, your departments.",
       "cta_primary": "Browse researchers",
       "cta_secondary": "View analytics"
     },

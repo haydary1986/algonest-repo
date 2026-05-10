@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useMemo } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { buttonVariants } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
@@ -336,6 +336,28 @@ export function Hero() {
           >
             {t('tagline')}
           </p>
+
+          {/* Customization callout — signals to evaluating universities that
+              the platform is white-labelable end-to-end. */}
+          <div
+            className="hero-fade-up mt-6 max-w-xl rounded-xl border border-sky-500/20 bg-gradient-to-br from-sky-500/10 via-cyan-500/5 to-teal-500/10 p-4 backdrop-blur-sm"
+            style={{ transitionDelay: '0.45s' }}
+          >
+            <div className="flex items-start gap-3">
+              <Sparkles
+                className="mt-0.5 size-5 shrink-0 text-sky-500"
+                aria-hidden
+              />
+              <div>
+                <p className="text-sm font-semibold text-foreground">
+                  {t('customization_badge')}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {t('customization_note')}
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* CTAs */}
           <div

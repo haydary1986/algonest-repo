@@ -99,6 +99,22 @@ export function LandingSchema() {
       },
       {
         '@type': 'Question',
+        name: 'Is the platform customizable for our university?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes — design, colors, typography, logo, and the feature set are all fully customizable. Each deployment is tailored to the host university\'s brand identity, fields and forms, departments and colleges hierarchy, and existing systems integration. Contact hello@algonest.tech to discuss a deployment.',
+        },
+      },
+      {
+        '@type': 'Question',
+        name: 'هل المنصّة قابلة للتخصيص لجامعتنا؟',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'نعم — التصميم والألوان والخطوط والشعار والمميزات قابلة للتخصيص بالكامل. كل نشر يُكيَّف ليلائم هويّة الجامعة المضيفة، وحقولها ونماذجها، وتدرّج كلياتها وأقسامها، والتكامل مع أنظمتها الحالية. للتواصل: hello@algonest.tech.',
+        },
+      },
+      {
+        '@type': 'Question',
         name: 'How is a digital repository different from a regular university website?',
         acceptedAnswer: {
           '@type': 'Answer',

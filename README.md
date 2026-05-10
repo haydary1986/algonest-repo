@@ -49,6 +49,19 @@
 
 ---
 
+> ## ✨ Fully customizable — قابل للتخصيص بالكامل
+>
+> **EN:** Design, colors, typography, logo, and the feature set are all fully
+> customizable. Each deployment is tailored to the host university's brand
+> identity, fields and forms, departments and colleges hierarchy, and existing
+> systems integration. Contact **hello@algonest.tech** to discuss a deployment.
+>
+> **AR:** التصميم والألوان والخطوط والشعار والمميزات كلها قابلة للتخصيص
+> بالكامل لتلائم هويّة جامعتك ومتطلّبات عملها — شعارك، ألوانك، حقولك،
+> وأقسامك. للتواصل: **hello@algonest.tech**.
+
+---
+
 ## المميزات الرئيسية — Key Highlights
 
 |     | الميزة                                           | Feature                                                |

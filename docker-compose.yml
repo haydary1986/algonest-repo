@@ -11,7 +11,7 @@
 #   4. Configure environment variables in the Coolify UI (overrides any
 #      values below). NEXT_PUBLIC_* must also be set as Build Args so they
 #      get inlined into the client bundle.
-#   5. Set the public domain to https://ris.aliraqia.edu.iq
+#   5. Set the public domain to https://repo.aliraqia.edu.iq
 
 services:
   web:

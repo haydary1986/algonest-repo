@@ -39,7 +39,7 @@
 > - Using the design, architecture, database schema, or visual identity of
 >   this project in another product is **strictly prohibited**.
 > - The official production instance runs at
->   [**ris.aliraqia.edu.iq**](https://ris.aliraqia.edu.iq). Any other
+>   [**repo.aliraqia.edu.iq**](https://repo.aliraqia.edu.iq). Any other
 >   deployment claiming to be or to derive from this software without
 >   permission is unauthorized.
 > - See the full [LICENSE](LICENSE) for terms, including enforcement under
@@ -330,7 +330,7 @@ See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete gu
 6. Set environment variables in Coolify (see [.env.example](.env.example)).
    `NEXT_PUBLIC_*` values must also be added as **Build Args** so they get
    inlined into the client bundle.
-7. Point DNS (`ris.aliraqia.edu.iq` → your VPS) via Cloudflare and let
+7. Point DNS (`repo.aliraqia.edu.iq` → your VPS) via Cloudflare and let
    Coolify provision the TLS cert.
 8. Open `/admin/setup` to verify all services.
 
@@ -341,8 +341,8 @@ See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete gu
 See [.env.example](.env.example) for all variables. Required:
 
 ```
-NEXT_PUBLIC_SITE_URL=https://ris.aliraqia.edu.iq
-NEXT_PUBLIC_SUPABASE_URL=https://api-ris.aliraqia.edu.iq
+NEXT_PUBLIC_SITE_URL=https://repo.aliraqia.edu.iq
+NEXT_PUBLIC_SUPABASE_URL=https://api-repo.aliraqia.edu.iq
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 NEXT_PUBLIC_OPENALEX_INSTITUTION_ID=I...   # Look up Al-Iraqia on OpenAlex

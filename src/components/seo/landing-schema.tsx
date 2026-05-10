@@ -72,7 +72,7 @@ export function LandingSchema() {
         name: 'Does every researcher get an academic profile page?',
         acceptedAnswer: {
           '@type': 'Answer',
-          text: 'Yes. Every faculty member has a dedicated public profile at ris.aliraqia.edu.iq/{locale}/researcher/{username}. The profile serves as their citable academic identity, indexed by Google with Person and ProfilePage structured data.',
+          text: 'Yes. Every faculty member has a dedicated public profile at repo.aliraqia.edu.iq/{locale}/researcher/{username}. The profile serves as their citable academic identity, indexed by Google with Person and ProfilePage structured data.',
         },
       },
       {

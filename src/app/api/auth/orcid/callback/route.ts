@@ -11,7 +11,7 @@ const ORCID_TOKEN = 'https://orcid.org/oauth/token';
 const ORCID_API = 'https://pub.orcid.org/v3.0';
 
 function backTo(path: string): string {
-  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://ris.aliraqia.edu.iq';
+  const origin = process.env.NEXT_PUBLIC_SITE_URL || 'https://repo.aliraqia.edu.iq';
   return `${origin}/${routing.defaultLocale}${path}`;
 }
 

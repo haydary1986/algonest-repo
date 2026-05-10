@@ -474,7 +474,7 @@ export default async function CvPage({ params }: CvPageProps) {
             {isAr
               ? `تم إنشاء هذه السيرة الذاتية تلقائياً من نظام معلومات الباحثين — الجامعة العراقية — ${new Date().toLocaleDateString('ar-IQ')}`
               : `Auto-generated from Researcher Information System — Al-Iraqia University — ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`}
-            {' | '}ris.aliraqia.edu.iq
+            {' | '}repo.aliraqia.edu.iq
           </div>
         </div>
       </div>

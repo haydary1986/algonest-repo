@@ -71,9 +71,9 @@ const SERVICES: ServiceConfig[] = [
     title: 'ORCID (Publication Import)',
     titleAr: 'ORCID (استيراد المنشورات)',
     description:
-      'Sign up at orcid.org/developer-tools → Register app → Redirect URI: https://ris.aliraqia.edu.iq/api/auth/orcid/callback',
+      'Sign up at orcid.org/developer-tools → Register app → Redirect URI: https://repo.aliraqia.edu.iq/api/auth/orcid/callback',
     descriptionAr:
-      'سجّل في orcid.org/developer-tools → أنشئ تطبيق → Redirect URI: https://ris.aliraqia.edu.iq/api/auth/orcid/callback',
+      'سجّل في orcid.org/developer-tools → أنشئ تطبيق → Redirect URI: https://repo.aliraqia.edu.iq/api/auth/orcid/callback',
     link: 'https://orcid.org/developer-tools',
     linkLabel: 'ORCID Developer Portal',
     fields: [

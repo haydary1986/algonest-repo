@@ -32,8 +32,8 @@
   },
   "landing": {
     "hero": {
-      "title": "Algonest Researcher Directory & Academic Profiles",
-      "tagline": "A public researcher directory for Algonest — every faculty member has an indexed academic profile with publications, citations, and a one-click CV.",
+      "title": "Algonest Digital Repository — Researcher Directory & Academic Profile Platform",
+      "tagline": "An institutional digital repository and researcher information system (RIS): a searchable directory of researchers, citable academic profile pages, publication tracking from Scopus / ORCID / OpenAlex, and a one-click CV — bilingual (Arabic / English), SEO-optimized, free.",
       "cta_primary": "Browse researchers",
       "cta_secondary": "View analytics"
     },
@@ -365,7 +365,7 @@
     "terms": "Terms of Service",
     "explore": "Explore",
     "colleges": "Colleges",
-    "brand_pitch": "The official researcher directory of Algonest — academic profiles, publication tracking, and one-click CV, all in one place.",
+    "brand_pitch": "Algonest digital repository & Researcher Information System — bilingual researcher directory, academic profiles, publication tracking, and one-click CV in one place.",
     "address": "Baghdad, Iraq",
     "copyright": "© {year} Algonest. All rights reserved.",
     "built_by": "Built & maintained by Haydar AL-IESSA"

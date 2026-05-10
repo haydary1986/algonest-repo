@@ -36,12 +36,32 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: {
-    default: 'RIS — Algonest Researcher Directory',
-    template: '%s · RIS',
+    default:
+      'Algonest Digital Repository — Researcher Directory, Academic Profiles & RIS Platform',
+    template: '%s · Algonest RIS',
   },
-  description: 'Research Information System for the Algonest.',
-  applicationName: 'RIS',
+  description:
+    'Algonest is a bilingual (Arabic / English) digital repository and Researcher Information System (RIS): public researcher directory, citable academic profile pages, publication tracking from Scopus / ORCID / OpenAlex, analytics, and one-click CV generation.',
+  applicationName: 'Algonest RIS',
   authors: [{ name: 'Algonest' }],
+  keywords: [
+    'digital repository',
+    'institutional repository',
+    'research repository',
+    'researcher information system',
+    'RIS platform',
+    'researcher directory',
+    'academic profile',
+    'مستودع رقمي',
+    'مستودع رقمي مؤسسي',
+    'مستودع البحث العلمي',
+    'دليل الباحثين',
+    'نظام معلومات الباحثين',
+    'منصة الباحثين',
+    'الملفات الأكاديمية',
+    'Algonest',
+    'عش الخوارزميات',
+  ],
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION,
   },

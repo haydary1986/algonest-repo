@@ -1,12 +1,12 @@
 <p align="center">
-  <h1 align="center">Algonest RIS — Demo</h1>
+  <h1 align="center">Algonest RIS — Digital Repository & Researcher Information System</h1>
   <p align="center">
-    <strong>منصة المستودع الرقمي للباحثين — عرض من شركة عش الخوارزميات</strong>
+    <strong>مستودع رقمي مؤسسي ثنائي اللغة للجامعات ومراكز البحث — عرض من شركة عش الخوارزميات</strong>
   </p>
   <p align="center">
-    منصة عرض (demo) ثنائية اللغة (عربي/إنكليزي) لنظام معلومات الباحثين، نقدّمها للجامعات والمراكز البحثية لتقييم تجربة الاستخدام قبل التبنّي الفعلي.
+    مستودع رقمي مؤسسي (Institutional Digital Repository) ونظام معلومات الباحثين RIS، ثنائي اللغة (عربي/إنكليزي)، يضم دليلاً قابلاً للبحث للباحثين، صفحات ملفات أكاديمية قابلة للاستشهاد، تتبّع المنشورات من Scopus / ORCID / OpenAlex، لوحة تحليلات، ومولّد سيرة ذاتية. النسخة هنا هي عرض (demo) للجامعات والمراكز البحثية.
     <br />
-    A bilingual (EN/AR) Researcher Information System demo by Algonest — a showcase platform that universities and research centres can preview before adoption.
+    A bilingual (EN/AR) institutional digital repository and Researcher Information System (RIS) — an Algonest demo for universities and research centres to evaluate before adoption. Searchable researcher directory, citable academic profile pages, publication tracking via Scopus / ORCID / OpenAlex, analytics dashboard, and one-click CV generator.
   </p>
 </p>
 

@@ -20,7 +20,7 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 DECLARE
-  allowed_domains text[] := ARRAY['uoturath.edu.iq'];
+  allowed_domains text[] := ARRAY['aliraqia.edu.iq'];
   email_domain    text;
 BEGIN
   -- Admin-invited accounts skip the domain check.

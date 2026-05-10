@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">RIS — Researcher Information System</h1>
   <p align="center">
-    <strong>نظام معلومات الباحثين — جامعة التراث</strong>
+    <strong>نظام معلومات الباحثين — الجامعة العراقية</strong>
   </p>
   <p align="center">
     منصة دليل الباحثين ثنائية اللغة (عربي/إنكليزي) مع تتبّع المنشورات، تحليلات متقدّمة، وملفات باحثين مُحسَّنة لمحرّكات البحث.
@@ -31,7 +31,7 @@
 
 > ## ⚠️ Ownership & Legal Notice — تنبيه ملكية
 >
-> © 2026 **Haydar Abdulameer Yousif AL-IESSA** — AL-Turath University.  
+> © 2026 **Haydar Abdulameer Yousif AL-IESSA** — Al-Iraqia University.  
 > **All Rights Reserved.** This source code is published **for viewing only**.
 >
 > - Cloning, forking, deploying, or re-hosting this software — in whole or in
@@ -39,14 +39,14 @@
 > - Using the design, architecture, database schema, or visual identity of
 >   this project in another product is **strictly prohibited**.
 > - The official production instance runs at
->   [**ris.uoturath.edu.iq**](https://ris.uoturath.edu.iq). Any other
+>   [**ris.aliraqia.edu.iq**](https://ris.aliraqia.edu.iq). Any other
 >   deployment claiming to be or to derive from this software without
 >   permission is unauthorized.
 > - See the full [LICENSE](LICENSE) for terms, including enforcement under
 >   Iraqi Law No. 65 of 2012 and the WIPO Copyright Treaty.
 >
 > **Original author:** [@haydary1986](https://github.com/haydary1986) ·
-> **First commit:** March 2026 · **Institution:** AL-Turath University.
+> **First commit:** March 2026 · **Institution:** Al-Iraqia University.
 
 ---
 
@@ -318,16 +318,21 @@ ris-platform/
 
 See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete guide.
 
-### TL;DR
+### TL;DR — Coolify deploy
 
 1. VPS (8 vCPU, 16 GB RAM, Ubuntu 22.04)
 2. Install Coolify: `curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash`
-3. Deploy Supabase from Coolify template
-4. Apply 30 SQL migrations
-5. Deploy this app from GitHub (Dockerfile)
-6. Add env vars in Coolify
-7. Point DNS via Cloudflare
-8. Open `/admin/setup` to verify all services
+3. Deploy Supabase from the Coolify one-click template
+4. Apply the SQL migrations under `supabase/migrations/`
+5. In Coolify, **New Resource → Application → Docker Compose**, point it at
+   this repo, branch `main`, and let it pick up the included
+   [`docker-compose.yml`](docker-compose.yml). Service name: `web`.
+6. Set environment variables in Coolify (see [.env.example](.env.example)).
+   `NEXT_PUBLIC_*` values must also be added as **Build Args** so they get
+   inlined into the client bundle.
+7. Point DNS (`ris.aliraqia.edu.iq` → your VPS) via Cloudflare and let
+   Coolify provision the TLS cert.
+8. Open `/admin/setup` to verify all services.
 
 **No paid subscriptions required.** Everything is self-hosted and open source.
 
@@ -336,10 +341,11 @@ See [docs/SETUP-REQUIREMENTS.md](docs/SETUP-REQUIREMENTS.md) for the complete gu
 See [.env.example](.env.example) for all variables. Required:
 
 ```
-NEXT_PUBLIC_SITE_URL=https://yourdomain.com
-NEXT_PUBLIC_SUPABASE_URL=https://api-ris.yourdomain.com
+NEXT_PUBLIC_SITE_URL=https://ris.aliraqia.edu.iq
+NEXT_PUBLIC_SUPABASE_URL=https://api-ris.aliraqia.edu.iq
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
+NEXT_PUBLIC_OPENALEX_INSTITUTION_ID=I...   # Look up Al-Iraqia on OpenAlex
 ```
 
 Optional: `SENTRY_DSN`, `ORCID_CLIENT_ID/SECRET`, `SCOPUS_API_KEY`, `GOOGLE_SITE_VERIFICATION`, `INDEXNOW_KEY`.
@@ -362,5 +368,5 @@ software requires written permission from the copyright holder.
 ---
 
 <p align="center">
-  Built for the AL-Turath University Research Community
+  Built for the Al-Iraqia University Research Community
 </p>

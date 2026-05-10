@@ -33,7 +33,7 @@ async function fetchPublications(year?: string, type?: string, page = 1) {
 
   try {
     const res = await fetch(
-      `https://api.openalex.org/works?filter=${filters.join(',')}&per_page=25&page=${page}&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,type,open_access,authorships,primary_location&mailto=ris@uoturath.edu.iq`,
+      `https://api.openalex.org/works?filter=${filters.join(',')}&per_page=25&page=${page}&sort=cited_by_count:desc&select=title,publication_year,doi,cited_by_count,type,open_access,authorships,primary_location&mailto=ris@aliraqia.edu.iq`,
       { cache: 'no-store' },
     );
     if (!res.ok) return { total: 0, works: [], perPage: 25 };
@@ -51,7 +51,7 @@ async function fetchPublications(year?: string, type?: string, page = 1) {
 async function fetchYearFacets() {
   try {
     const res = await fetch(
-      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},is_retracted:false&group_by=publication_year&mailto=ris@uoturath.edu.iq`,
+      `https://api.openalex.org/works?filter=institutions.id:${OPENALEX_INSTITUTION_ID},is_retracted:false&group_by=publication_year&mailto=ris@aliraqia.edu.iq`,
       { cache: 'no-store' },
     );
     if (!res.ok) return [];

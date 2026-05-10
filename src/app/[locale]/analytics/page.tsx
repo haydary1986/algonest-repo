@@ -155,8 +155,8 @@ export default async function AnalyticsPage({ params }: AnalyticsPageProps) {
         </h1>
         <p className="text-muted-foreground text-sm">
           {isAr
-            ? 'الإنتاج البحثي لجامعة التراث — بيانات من OpenAlex'
-            : 'AL-Turath University research output — Data from OpenAlex'}
+            ? 'الإنتاج البحثي لالجامعة العراقية — بيانات من OpenAlex'
+            : 'Al-Iraqia University research output — Data from OpenAlex'}
         </p>
       </header>
 

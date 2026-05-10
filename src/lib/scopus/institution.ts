@@ -1,6 +1,6 @@
 import { getIntegrationValue } from '@/lib/integrations/config';
 
-const AFFILIATION_QUERY = 'AFFILORG(Al-Turath)';
+const AFFILIATION_QUERY = 'AFFILORG(Al-Iraqia OR Iraqia)';
 
 interface ScopusStats {
   totalPublications: number;

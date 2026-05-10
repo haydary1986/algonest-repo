@@ -33,18 +33,18 @@ export async function generateMetadata({
   const keywords =
     locale === 'ar'
       ? [
-          'جامعة التراث',
+          'الجامعة العراقية',
           'دليل الباحثين',
           'ملف أكاديمي',
           'سيرة ذاتية أكاديمية',
-          'باحثو جامعة التراث',
+          'باحثو الجامعة العراقية',
           'المنشورات العلمية',
           'أعضاء هيئة التدريس',
           'العراق',
           'بغداد',
         ]
       : [
-          'AL-Turath University',
+          'Al-Iraqia University',
           'researcher directory',
           'academic profile',
           'CV generator',
@@ -69,7 +69,7 @@ export async function generateMetadata({
       title: t('title'),
       description,
       locale,
-      siteName: 'AL-Turath RIS',
+      siteName: 'Al-Iraqia RIS',
     },
     twitter: {
       card: 'summary_large_image',

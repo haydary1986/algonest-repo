@@ -9,10 +9,10 @@ export function OrganizationSchema() {
       data={{
         '@context': 'https://schema.org',
         '@type': 'CollegeOrUniversity',
-        name: 'AL-Turath University',
-        alternateName: 'جامعة التراث',
+        name: 'Al-Iraqia University',
+        alternateName: 'الجامعة العراقية',
         url,
-        sameAs: ['https://uoturath.edu.iq', 'https://uoturath.edu.iq'],
+        sameAs: ['https://aliraqia.edu.iq', 'https://aliraqia.edu.iq'],
         address: {
           '@type': 'PostalAddress',
           addressCountry: 'IQ',

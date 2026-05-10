@@ -6,7 +6,7 @@ import { checkProfileComplete } from '@/lib/profile/is-complete';
 import { logError, logWarn } from '@/lib/logger';
 
 const SAFE_NEXT = /^\/(en|ar)\/[a-zA-Z0-9_\-/]*$/;
-const ALLOWED_DOMAIN = 'uoturath.edu.iq';
+const ALLOWED_DOMAIN = 'aliraqia.edu.iq';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

@@ -1,4 +1,9 @@
-const OPENALEX_INSTITUTION_ID = 'I2801460691';
+// TODO: Set NEXT_PUBLIC_OPENALEX_INSTITUTION_ID in your environment to the
+// official OpenAlex ID for Al-Iraqia University (look up at
+// https://api.openalex.org/institutions?search=Al-Iraqia). The fallback below
+// is the legacy AL-Turath ID and will return wrong stats until overridden.
+const OPENALEX_INSTITUTION_ID =
+  process.env.NEXT_PUBLIC_OPENALEX_INSTITUTION_ID || 'I2801460691';
 const CACHE_TTL = 3600_000; // 1 hour
 
 interface InstitutionStats {
@@ -25,7 +30,7 @@ export async function getInstitutionStats(): Promise<InstitutionStats | null> {
 
     const d = await res.json();
     const stats: InstitutionStats = {
-      name: d.display_name ?? 'AL-Turath University',
+      name: d.display_name ?? 'Al-Iraqia University',
       worksCount: d.works_count ?? 0,
       citedByCount: d.cited_by_count ?? 0,
       hIndex: d.summary_stats?.h_index ?? 0,

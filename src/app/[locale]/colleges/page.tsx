@@ -68,7 +68,7 @@ export default async function CollegesPage({ params }: Props) {
     <main className="container mx-auto flex flex-col gap-8 px-4 py-8">
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">
-          {isAr ? 'كليات وأقسام جامعة التراث' : 'AL-Turath University Colleges & Departments'}
+          {isAr ? 'كليات وأقسام الجامعة العراقية' : 'Al-Iraqia University Colleges & Departments'}
         </h1>
         <p className="text-muted-foreground">
           {isAr

@@ -2,7 +2,7 @@
   "common": {
     "app_name": "RIS",
     "app_full_name": "Researcher Information System",
-    "university": "AL-Turath University",
+    "university": "Al-Iraqia University",
     "loading": "Loading…",
     "error": "Something went wrong.",
     "save": "Save",
@@ -32,8 +32,8 @@
   },
   "landing": {
     "hero": {
-      "title": "AL-Turath University Researcher Directory & Academic Profiles",
-      "tagline": "A public researcher directory for AL-Turath University — every faculty member has an indexed academic profile with publications, citations, and a one-click CV.",
+      "title": "Al-Iraqia University Researcher Directory & Academic Profiles",
+      "tagline": "A public researcher directory for Al-Iraqia University — every faculty member has an indexed academic profile with publications, citations, and a one-click CV.",
       "cta_primary": "Browse researchers",
       "cta_secondary": "View analytics"
     },
@@ -42,7 +42,7 @@
       "subtitle": "Three tools that make your faculty discoverable, citable, and easy to collaborate with.",
       "directory": {
         "title": "Public Researcher Directory",
-        "body": "Search and filter every AL-Turath scholar by college, department, research interest, or SDG. Bilingual (Arabic / English), fast, mobile-ready, and optimised for Google Scholar and Google search.",
+        "body": "Search and filter every Al-Iraqia scholar by college, department, research interest, or SDG. Bilingual (Arabic / English), fast, mobile-ready, and optimised for Google Scholar and Google search.",
         "link": "Explore the directory"
       },
       "academic_profile": {
@@ -116,17 +116,17 @@
   },
   "about": {
     "eyebrow": "About the platform",
-    "title": "RIS — the research face of AL-Turath University",
-    "lead": "The Research Information System is the official digital home of AL-Turath University's scholarly output. Every faculty member gets a citable academic profile, the public gets a searchable directory of our researchers, and a one-click CV generator keeps everyone's record up to date without duplicate work.",
+    "title": "RIS — the research face of Al-Iraqia University",
+    "lead": "The Research Information System is the official digital home of Al-Iraqia University's scholarly output. Every faculty member gets a citable academic profile, the public gets a searchable directory of our researchers, and a one-click CV generator keeps everyone's record up to date without duplicate work.",
     "chairman": {
       "eyebrow": "Chairman's letter",
       "heading": "A word from the Chairman of the Board of Trustees",
       "name": "Mr. Ali Al-Ogaily",
       "title": "Chairman of the Board of Trustees",
-      "institution": "AL-Turath University — Baghdad, Iraq",
-      "paragraph_1": "At AL-Turath University, our mission is rooted in a steady vision: research is not confined within laboratory walls — it is a bridge that connects the university to society and to the world. From this vision was born the Research Information System, to give every faculty member at our university an official, citable academic profile, and to make our scholarly achievements visible to every researcher, student, or partner anywhere in the world.",
+      "institution": "Al-Iraqia University — Baghdad, Iraq",
+      "paragraph_1": "At Al-Iraqia University, our mission is rooted in a steady vision: research is not confined within laboratory walls — it is a bridge that connects the university to society and to the world. From this vision was born the Research Information System, to give every faculty member at our university an official, citable academic profile, and to make our scholarly achievements visible to every researcher, student, or partner anywhere in the world.",
       "paragraph_2": "We believe the quality of a university is measured by the quality of its researchers and the impact of their work on the advancement of knowledge. That is why we have invested in this platform to be the digital face of our scientific output, and to encourage every researcher to document their work, connect with peers, and inspire those around them.",
-      "paragraph_3": "I invite every member of our university, and every visitor to this platform, to discover what our researchers are producing, to connect with them, and to benefit from their experience. AL-Turath University continues in its mission: building knowledge and serving society.",
+      "paragraph_3": "I invite every member of our university, and every visitor to this platform, to discover what our researchers are producing, to connect with them, and to benefit from their experience. Al-Iraqia University continues in its mission: building knowledge and serving society.",
       "signature": "— Mr. Ali Al-Ogaily"
     },
     "impact": {
@@ -167,7 +167,7 @@
         "2024": {
           "date": "Late 2024",
           "title": "Vision",
-          "body": "AL-Turath University's leadership identifies the need for a single, trusted platform to showcase faculty research output and protect the university's scholarly identity online."
+          "body": "Al-Iraqia University's leadership identifies the need for a single, trusted platform to showcase faculty research output and protect the university's scholarly identity online."
         },
         "2025_q1": {
           "date": "Early 2025",
@@ -182,7 +182,7 @@
         "2026_q1": {
           "date": "Q1 2026",
           "title": "Public launch",
-          "body": "ris.uoturath.edu.iq goes live. First cohort of researchers onboarded, SDG alignment added, college and department hub pages indexed."
+          "body": "ris.aliraqia.edu.iq goes live. First cohort of researchers onboarded, SDG alignment added, college and department hub pages indexed."
         },
         "2026_q2": {
           "date": "Q2 2026",
@@ -207,7 +207,7 @@
     "email_label": "Email",
     "web_label": "University website",
     "address_label": "Address",
-    "address_body": "AL-Turath University, Baghdad, Iraq."
+    "address_body": "Al-Iraqia University, Baghdad, Iraq."
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -244,7 +244,7 @@
       },
       "contact": {
         "title": "Privacy contact",
-        "body": "For any data-related question or request, email: research@uoturath.edu.iq"
+        "body": "For any data-related question or request, email: research@aliraqia.edu.iq"
       }
     }
   },
@@ -259,11 +259,11 @@
       },
       "use": {
         "title": "Permitted use",
-        "body": "The platform is intended to serve the academic community of AL-Turath University. Public browsing, search, and personal CV export are permitted."
+        "body": "The platform is intended to serve the academic community of Al-Iraqia University. Public browsing, search, and personal CV export are permitted."
       },
       "accounts": {
         "title": "Accounts",
-        "body": "You need an @uoturath.edu.iq institutional email to create an account. You are responsible for account security. Notify us immediately if you detect unauthorised use."
+        "body": "You need an @aliraqia.edu.iq institutional email to create an account. You are responsible for account security. Notify us immediately if you detect unauthorised use."
       },
       "content": {
         "title": "Researcher content",
@@ -291,13 +291,13 @@
       },
       "contact": {
         "title": "Contact about terms",
-        "body": "For any question, email: research@uoturath.edu.iq"
+        "body": "For any question, email: research@aliraqia.edu.iq"
       }
     }
   },
   "push": {
     "banner_title": "Stay in the loop",
-    "banner_body": "Get instant notifications for new research, announcements, and updates from AL-Turath University.",
+    "banner_body": "Get instant notifications for new research, announcements, and updates from Al-Iraqia University.",
     "enable": "Enable notifications",
     "later": "Not now",
     "dismiss": "Dismiss",
@@ -308,7 +308,7 @@
   "notifications": {
     "open": "Open notifications",
     "title": "Notifications",
-    "subtitle": "Recent announcements from AL-Turath University.",
+    "subtitle": "Recent announcements from Al-Iraqia University.",
     "empty": "No notifications yet."
   },
   "chat": {
@@ -316,7 +316,7 @@
     "close": "Close",
     "title": "AI Research Assistant",
     "subtitle": "Find researchers by topic or field",
-    "welcome": "Ask me to find researchers by field, topic, or interest — I know the AL-Turath directory.",
+    "welcome": "Ask me to find researchers by field, topic, or interest — I know the Al-Iraqia directory.",
     "placeholder": "e.g. I need an AI researcher…",
     "send": "Send",
     "disclaimer": "AI-generated. Verify important information on the researcher's profile.",
@@ -339,7 +339,7 @@
     },
     "page": {
       "title": "AI Research Assistant",
-      "subtitle": "Ask about AL-Turath researchers and the directory. Your conversations are saved.",
+      "subtitle": "Ask about Al-Iraqia researchers and the directory. Your conversations are saved.",
       "new_conversation": "New conversation",
       "no_conversations": "No conversations yet.",
       "untitled": "Untitled",
@@ -365,19 +365,19 @@
     "terms": "Terms of Service",
     "explore": "Explore",
     "colleges": "Colleges",
-    "brand_pitch": "The official researcher directory of AL-Turath University — academic profiles, publication tracking, and one-click CV, all in one place.",
+    "brand_pitch": "The official researcher directory of Al-Iraqia University — academic profiles, publication tracking, and one-click CV, all in one place.",
     "address": "Baghdad, Iraq",
-    "copyright": "© {year} AL-Turath University. All rights reserved.",
+    "copyright": "© {year} Al-Iraqia University. All rights reserved.",
     "built_by": "Built & maintained by Haydar AL-IESSA"
   },
   "auth": {
     "sign_in": {
       "title": "Sign in",
-      "description": "Use your AL-Turath University Google account.",
+      "description": "Use your Al-Iraqia University Google account.",
       "google": "Continue with Google",
-      "institutional_only": "Only @uoturath.edu.iq accounts may sign in.",
+      "institutional_only": "Only @aliraqia.edu.iq accounts may sign in.",
       "error_generic": "We couldn't sign you in. Please try again or contact the admin.",
-      "error_unauthorized_domain": "Access denied — only @uoturath.edu.iq email addresses are allowed. Your login attempt has been logged."
+      "error_unauthorized_domain": "Access denied — only @aliraqia.edu.iq email addresses are allowed. Your login attempt has been logged."
     }
   },
   "profile": {
@@ -677,7 +677,7 @@
       "role": "Role",
       "createdAt": "Created at",
       "actions": "Actions",
-      "addPlaceholder": "user@uoturath.edu.iq",
+      "addPlaceholder": "user@aliraqia.edu.iq",
       "addButton": "Add admin",
       "remove": "Remove",
       "confirmRemove": "Are you sure you want to remove this admin?",

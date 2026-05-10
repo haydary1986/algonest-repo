@@ -57,7 +57,7 @@ export default async function OgImage({ params }: OgImageProps) {
           textTransform: 'uppercase',
         }}
       >
-        AL-Turath University · RIS
+        Al-Iraqia University · RIS
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>

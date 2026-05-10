@@ -71,9 +71,9 @@ const SERVICES: ServiceConfig[] = [
     title: 'ORCID (Publication Import)',
     titleAr: 'ORCID (استيراد المنشورات)',
     description:
-      'Sign up at orcid.org/developer-tools → Register app → Redirect URI: https://ris.uoturath.edu.iq/api/auth/orcid/callback',
+      'Sign up at orcid.org/developer-tools → Register app → Redirect URI: https://ris.aliraqia.edu.iq/api/auth/orcid/callback',
     descriptionAr:
-      'سجّل في orcid.org/developer-tools → أنشئ تطبيق → Redirect URI: https://ris.uoturath.edu.iq/api/auth/orcid/callback',
+      'سجّل في orcid.org/developer-tools → أنشئ تطبيق → Redirect URI: https://ris.aliraqia.edu.iq/api/auth/orcid/callback',
     link: 'https://orcid.org/developer-tools',
     linkLabel: 'ORCID Developer Portal',
     fields: [
@@ -147,7 +147,7 @@ const SERVICES: ServiceConfig[] = [
         key: 'integration.push.vapid_subject',
         label: 'Contact Subject (mailto:)',
         labelAr: 'جهة الاتصال (mailto:)',
-        placeholder: 'mailto:admin@uoturath.edu.iq',
+        placeholder: 'mailto:admin@aliraqia.edu.iq',
       },
     ],
   },
@@ -243,7 +243,7 @@ const SERVICES: ServiceConfig[] = [
         key: 'integration.unpaywall.email',
         label: 'Contact Email',
         labelAr: 'البريد الإلكتروني',
-        placeholder: 'admin@uoturath.edu.iq',
+        placeholder: 'admin@aliraqia.edu.iq',
       },
     ],
   },
@@ -262,7 +262,7 @@ const SERVICES: ServiceConfig[] = [
         key: 'integration.crossref.email',
         label: 'Contact Email (for polite pool)',
         labelAr: 'البريد الإلكتروني (للحصول على أولوية)',
-        placeholder: 'admin@uoturath.edu.iq',
+        placeholder: 'admin@aliraqia.edu.iq',
       },
     ],
   },

@@ -12,9 +12,21 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ENV NEXT_PUBLIC_SUPABASE_URL=https://api-ris.uoturath.edu.iq
-ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc3NjM4OTg4MCwiZXhwIjo0OTMyMDYzNDgwLCJyb2xlIjoiYW5vbiJ9.2hrE9SyjjqktVCmVitmR0w37uRln1kmdrkfVhX7qrak
-ENV NEXT_PUBLIC_SITE_URL=https://ris.uoturath.edu.iq
+# NEXT_PUBLIC_* must be available at build time so they get inlined into
+# the client bundle. In Coolify, set these as build-time variables on the
+# application (Build Configuration → Build Args), or rely on the defaults
+# below for first-pass deploys.
+ARG NEXT_PUBLIC_SUPABASE_URL=https://api-ris.aliraqia.edu.iq
+ARG NEXT_PUBLIC_SUPABASE_ANON_KEY
+ARG NEXT_PUBLIC_SITE_URL=https://ris.aliraqia.edu.iq
+ARG NEXT_PUBLIC_OPENALEX_INSTITUTION_ID
+ARG NEXT_PUBLIC_SENTRY_DSN
+
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_OPENALEX_INSTITUTION_ID=$NEXT_PUBLIC_OPENALEX_INSTITUTION_ID
+ENV NEXT_PUBLIC_SENTRY_DSN=$NEXT_PUBLIC_SENTRY_DSN
 ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN npm run build
@@ -35,5 +47,10 @@ USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+# Coolify health check hits "/" by default; the Next.js server replies 200
+# on the locale-redirected landing page once the app boots.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD wget -qO- http://127.0.0.1:3000/ || exit 1
 
 CMD ["node", "server.js"]
